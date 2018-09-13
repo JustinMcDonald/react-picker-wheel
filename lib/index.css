@@ -223,6 +223,8 @@
 
     /* assurance */
     &.assurance {
+        position: relative;
+
         .datepicker-col-1 {margin: 0}
 
         .datepicker-col-1:first {
