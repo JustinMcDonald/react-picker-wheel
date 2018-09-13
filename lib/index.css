@@ -221,6 +221,56 @@
         }
     }
 
+    /* assurance */
+    &.assurance {
+        .datepicker-col-1 {margin: 0}
+
+        .datepicker-col-1:first {
+            flex: 2;
+        }
+
+        .datepicker-header {
+            color: var(--ios-color);
+            padding: 0 3.5em;
+        }
+        .datepicker-viewport {
+            &::after {
+                background: linear-gradient(#fff,rgba(245,245,245,0)52%,rgba(245,245,245,0)48%,#fff);
+            }
+        }
+        .datepicker-wheel {
+            border-top: 1px solid var(--ios-theme);
+            border-bottom: 1px solid var(--ios-theme);
+        }
+        .datepicker-scroll {
+            li {
+                color: var(--ios-color);
+            }
+
+            li.disabled {
+                color: var(--ios-disabled-color);
+            }
+        }
+
+        .datepicker-navbar {
+            display: none;
+        }
+        .datepicker-navbar-btn {
+            color: #007aff;
+            &:nth-child(2) {
+                float: left;
+            }
+        }
+
+        .datepicker-content {
+            padding: 0;
+        }
+
+        .datepicker-header + .datepicker-content {
+          padding-top: 0;
+        }
+    }
+
 
     /* android */
     &.android, &.android-dark {
