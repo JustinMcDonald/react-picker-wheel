@@ -27,7 +27,8 @@
     "test": "./node_modules/.bin/nyc npm run mocha",
     "coverage": "./node_modules/.bin/nyc report --reporter=text-lcov | ./node_modules/.bin/coveralls",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "postinstall": "npm run-script build"
   },
   "author": "rainie",
   "devDependencies": {
