@@ -24,7 +24,7 @@
     --android-dark-disabled-color: color(var(--android-dark-color) blend(var(--android-dark-bg) 70%));
 }
 
-.datepicker-modal {
+.picker-wheel-modal {
     position: fixed;
     right: 0;
     bottom: 0;
@@ -37,7 +37,7 @@
     justify-content: center;
 }
 
-.datepicker {
+.picker-wheel {
     position: absolute;
     left: 0;
     bottom: 0;
@@ -50,19 +50,19 @@
     -webkit-font-smoothing: antialiased;
     user-select: none;
 
-    .datepicker-header {
+    .picker-wheel-header {
         padding: 0 .5em;
         min-height: 2em;
         line-height: 2em;
         font-size: 1.125em;
     }
 
-    .datepicker-navbar {
+    .picker-wheel-navbar {
         padding: 0 .5em .5em .5em;
         overflow: hidden;
     }
 
-    .datepicker-navbar-btn {
+    .picker-wheel-navbar-btn {
         height: 2.5em;
         line-height: 2.5em;
         float: right;
@@ -70,17 +70,17 @@
         cursor: pointer;
     }
 
-    .datepicker-content {
+    .picker-wheel-content {
         display: flex;
         padding: .5em .25em;
     }
 
-    .datepicker-col-1 {
+    .picker-wheel-col-1 {
         flex: 1;
         margin: 0 .25em;
     }
 
-    .datepicker-viewport {
+    .picker-wheel-viewport {
         height: 200px;
         position: relative;
         overflow: hidden;
@@ -96,7 +96,7 @@
         }
     }
 
-    .datepicker-wheel {
+    .picker-wheel-wheel {
         position: absolute;
         height: 40px;
         top: 50%;
@@ -104,7 +104,7 @@
         width: 100%;
     }
 
-    .datepicker-scroll {
+    .picker-wheel-scroll {
         list-style-type: none;
         padding: 0;
         &>li {
@@ -116,20 +116,20 @@
     }
 }
 
-.datepicker {
+.picker-wheel {
 
     /* default */
     &.default {
         background-color: var(--default-bg);
 
-        .datepicker-header {
+        .picker-wheel-header {
             color: var(--default-theme);
         }
-        .datepicker-wheel {
+        .picker-wheel-wheel {
             border-top: 1px solid var(--default-theme);
             border-bottom: 1px solid var(--default-theme);
         }
-        .datepicker-scroll {
+        .picker-wheel-scroll {
             li {
                 color: var(--default-color);
             }
@@ -138,7 +138,7 @@
                 color: var(--default-disabled-color);
             }
         }
-        .datepicker-navbar-btn {
+        .picker-wheel-navbar-btn {
             color: var(--default-theme);
         }
     }
@@ -147,14 +147,14 @@
     &.dark {
         background-color: var(--dark-bg);
 
-        .datepicker-header {
+        .picker-wheel-header {
             color: var(--dark-theme);
         }
-        .datepicker-wheel {
+        .picker-wheel-wheel {
             border-top: 1px solid var(--dark-theme);
             border-bottom: 1px solid var(--dark-theme);
         }
-        .datepicker-scroll {
+        .picker-wheel-scroll {
             li {
                 color: var(--dark-color);
             }
@@ -163,7 +163,7 @@
                 color: var(--dark-disabled-color);
             }
         }
-        .datepicker-navbar-btn {
+        .picker-wheel-navbar-btn {
             color: var(--dark-theme);
         }
     }
@@ -171,22 +171,22 @@
     /* ios */
     &.ios {
         background-color: var(--ios-bg);
-        .datepicker-col-1 {margin: 0}
+        .picker-wheel-col-1 {margin: 0}
 
-        .datepicker-header {
+        .picker-wheel-header {
             color: var(--ios-color);
             padding: 0 3.5em;
         }
-        .datepicker-viewport {
+        .picker-wheel-viewport {
             &::after {
                 background: linear-gradient(#f7f7f7,rgba(245,245,245,0)52%,rgba(245,245,245,0)48%,#f7f7f7);
             }
         }
-        .datepicker-wheel {
+        .picker-wheel-wheel {
             border-top: 1px solid var(--ios-theme);
             border-bottom: 1px solid var(--ios-theme);
         }
-        .datepicker-scroll {
+        .picker-wheel-scroll {
             li {
                 color: var(--ios-color);
             }
@@ -196,7 +196,7 @@
             }
         }
 
-        .datepicker-navbar {
+        .picker-wheel-navbar {
             position: absolute;
             z-index: 2;
             top: 0;
@@ -205,18 +205,18 @@
             padding: 0;
             border-bottom: 1px solid #acacac;
         }
-        .datepicker-navbar-btn {
+        .picker-wheel-navbar-btn {
             color: #007aff;
             &:nth-child(2) {
                 float: left;
             }
         }
 
-        .datepicker-content {
+        .picker-wheel-content {
             padding-top: 48px;
         }
 
-        .datepicker-header + .datepicker-content {
+        .picker-wheel-header + .picker-wheel-content {
           padding-top: 0;
         }
     }
@@ -225,7 +225,7 @@
     &.assurance {
         position: relative;
 
-        .datepicker-col-1 {
+        .picker-wheel-col-1 {
             margin: 0;
             &:first-child {
                 flex: 2;
@@ -236,20 +236,20 @@
             }
         }
 
-        .datepicker-header {
+        .picker-wheel-header {
             color: var(--ios-color);
             padding: 0 3.5em;
         }
-        .datepicker-viewport {
+        .picker-wheel-viewport {
             &::after {
                 background: linear-gradient(#fff,rgba(245,245,245,0)52%,rgba(245,245,245,0)48%,#fff);
             }
         }
-        .datepicker-wheel {
+        .picker-wheel-wheel {
             border-top: 1px solid var(--ios-theme);
             border-bottom: 1px solid var(--ios-theme);
         }
-        .datepicker-scroll {
+        .picker-wheel-scroll {
             li {
                 color: var(--ios-color);
             }
@@ -259,21 +259,21 @@
             }
         }
 
-        .datepicker-navbar {
+        .picker-wheel-navbar {
             display: none;
         }
-        .datepicker-navbar-btn {
+        .picker-wheel-navbar-btn {
             color: #007aff;
             &:nth-child(2) {
                 float: left;
             }
         }
 
-        .datepicker-content {
+        .picker-wheel-content {
             padding: 0;
         }
 
-        .datepicker-header + .datepicker-content {
+        .picker-wheel-header + .picker-wheel-content {
           padding-top: 0;
         }
     }
@@ -283,22 +283,22 @@
     &.android, &.android-dark {
         background-color: var(--android-bg);
 
-        .datepicker-header {
+        .picker-wheel-header {
             color: var(--android-theme);
             border-bottom: 2px solid var(--android-theme);
         }
-        .datepicker-col-1 {margin: 0 .625em}
-        .datepicker-viewport {
+        .picker-wheel-col-1 {margin: 0 .625em}
+        .picker-wheel-viewport {
             &::after {
                 background-image: linear-gradient(#f5f5f5,rgba(245,245,245,0)52%,rgba(245,245,245,0)48%,#f5f5f5);
             }
         }
-        .datepicker-wheel {
+        .picker-wheel-wheel {
             border-top: 2px solid var(--android-theme);
             border-bottom: 2px solid var(--android-theme);
         }
 
-        .datepicker-scroll {
+        .picker-wheel-scroll {
             li {
                 font-size: 1.125em;
                 color: var(--android-color);
@@ -309,12 +309,12 @@
             }
         }
 
-        .datepicker-navbar {
+        .picker-wheel-navbar {
             display: flex;
             border-top: 1px solid #d9d4d4;
             padding: 0;
         }
-        .datepicker-navbar-btn {
+        .picker-wheel-navbar-btn {
             padding: 0;
             color: #000;
             flex: 1;
@@ -327,12 +327,12 @@
     /* android-dark */
     &.android-dark {
         background-color: var(--android-dark-bg);
-        .datepicker-viewport {
+        .picker-wheel-viewport {
             &::after {
                 background-image: linear-gradient(#282828,rgba(40,40,40,0)52%,rgba(40,40,40,0)48%,#282828);
             }
         }
-        .datepicker-scroll {
+        .picker-wheel-scroll {
             li {
                 color: var(--android-dark-color);
             }
@@ -341,8 +341,8 @@
                 color: var(--android-dark-disabled-color);
             }
         }
-        .datepicker-navbar { border-color: #424542}
-        .datepicker-navbar-btn {
+        .picker-wheel-navbar { border-color: #424542}
+        .picker-wheel-navbar-btn {
             color: #fff;
             &:nth-child(2) {
                 border-color: #424542;

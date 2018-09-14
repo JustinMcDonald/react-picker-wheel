@@ -1,7 +1,7 @@
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('react'), require('react-dom')) :
 	typeof define === 'function' && define.amd ? define(['react', 'react-dom'], factory) :
-	(global.reactMobileDatePicker = factory(global.React,global.ReactDOM));
+	(global.reactPickerWheel = factory(global.React,global.ReactDOM));
 }(this, (function (React,ReactDOM) { 'use strict';
 
 function __$styleInject(css, ref) {
@@ -34,115 +34,7 @@ function __$styleInject(css, ref) {
 var React__default = 'default' in React ? React['default'] : React;
 ReactDOM = ReactDOM && ReactDOM.hasOwnProperty('default') ? ReactDOM['default'] : ReactDOM;
 
-__$styleInject(".datepicker-modal {\n    position: fixed;\n    right: 0;\n    bottom: 0;\n    width: 100%;\n    height: 100%;\n    background-color: rgba(0, 0, 0, .6);\n    z-index: 999;\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n}\n\n.datepicker {\n    position: absolute;\n    left: 0;\n    bottom: 0;\n    width: 100%;\n    z-index: 1;\n    font-size: 16px;\n    text-align: center;\n    font-family: arial,verdana,sans-serif;\n    -webkit-box-sizing: content-box;\n            box-sizing: content-box;\n    -webkit-font-smoothing: antialiased;\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n}\n\n.datepicker .datepicker-header {\n        padding: 0 .5em;\n        min-height: 2em;\n        line-height: 2em;\n        font-size: 1.125em;\n    }\n\n.datepicker .datepicker-navbar {\n        padding: 0 .5em .5em .5em;\n        overflow: hidden;\n    }\n\n.datepicker .datepicker-navbar-btn {\n        height: 2.5em;\n        line-height: 2.5em;\n        float: right;\n        padding: 0 1em;\n        cursor: pointer;\n    }\n\n.datepicker .datepicker-content {\n        display: -webkit-box;\n        display: -ms-flexbox;\n        display: flex;\n        padding: .5em .25em;\n    }\n\n.datepicker .datepicker-col-1 {\n        -webkit-box-flex: 1;\n            -ms-flex: 1;\n                flex: 1;\n        margin: 0 .25em;\n    }\n\n.datepicker .datepicker-viewport {\n        height: 200px;\n        position: relative;\n        overflow: hidden\n    }\n\n.datepicker .datepicker-viewport::after {\n    content: '';\n    position: absolute;\n    z-index: 2;\n    top: 0;\n    right: 0;\n    bottom: 0;\n    left: 0;\n    pointer-events: none;\n}\n\n.datepicker .datepicker-wheel {\n        position: absolute;\n        height: 40px;\n        top: 50%;\n        margin-top: -20px;\n        width: 100%;\n    }\n\n.datepicker .datepicker-scroll {\n        list-style-type: none;\n        padding: 0\n    }\n\n.datepicker .datepicker-scroll>li {\n    height: 40px;\n    line-height: 40px;\n    font-size: 1.375em;\n    cursor: pointer;\n}\n\n.datepicker {\n\n    /* default */\n}\n\n.datepicker.default {\n    background-color: #f7f7f7;\n}\n\n.datepicker.default .datepicker-header {\n            color: #4eccc4;\n}\n\n.datepicker.default .datepicker-wheel {\n            border-top: 1px solid #4eccc4;\n            border-bottom: 1px solid #4eccc4;\n}\n\n.datepicker.default .datepicker-scroll li {\n                color: rgb(59, 59, 59);\n            }\n\n.datepicker.default .datepicker-scroll li.disabled {\n                color: rgb(191, 191, 191);\n            }\n\n.datepicker.default .datepicker-navbar-btn {\n            color: #4eccc4;\n}\n\n.datepicker {\n\n    /* dark */\n}\n\n.datepicker.dark {\n    background-color: #263238;\n}\n\n.datepicker.dark .datepicker-header {\n            color: #50ccc4;\n}\n\n.datepicker.dark .datepicker-wheel {\n            border-top: 1px solid #50ccc4;\n            border-bottom: 1px solid #50ccc4;\n}\n\n.datepicker.dark .datepicker-scroll li {\n                color: rgb(201, 203, 204);\n            }\n\n.datepicker.dark .datepicker-scroll li.disabled {\n                color: rgb(87, 96, 100);\n            }\n\n.datepicker.dark .datepicker-navbar-btn {\n            color: #50ccc4;\n}\n\n.datepicker {\n\n    /* ios */\n}\n\n.datepicker.ios {\n    background-color: #f7f7f7;\n}\n\n.datepicker.ios .datepicker-col-1 {margin: 0;\n}\n\n.datepicker.ios .datepicker-header {\n            color: rgb(59, 59, 59);\n            padding: 0 3.5em;\n}\n\n.datepicker.ios .datepicker-viewport::after {\n    background: -webkit-gradient(linear,left top, left bottom,from(#f7f7f7),color-stop(52%, rgba(245, 245, 245, 0)),color-stop(48%, rgba(245, 245, 245, 0)),to(#f7f7f7));\n    background: linear-gradient(#f7f7f7,rgba(245, 245, 245, 0)52%,rgba(245, 245, 245, 0)48%,#f7f7f7);\n}\n\n.datepicker.ios .datepicker-wheel {\n            border-top: 1px solid #dbdbdb;\n            border-bottom: 1px solid #dbdbdb;\n}\n\n.datepicker.ios .datepicker-scroll li {\n                color: rgb(59, 59, 59);\n            }\n\n.datepicker.ios .datepicker-scroll li.disabled {\n                color: rgb(191, 191, 191);\n            }\n\n.datepicker.ios .datepicker-navbar {\n            position: absolute;\n            z-index: 2;\n            top: 0;\n            left: 0;\n            width: 100%;\n            padding: 0;\n            border-bottom: 1px solid #acacac;\n}\n\n.datepicker.ios .datepicker-navbar-btn {\n            color: #007aff;\n}\n\n.datepicker.ios .datepicker-navbar-btn:nth-child(2) {\n    float: left;\n}\n\n.datepicker.ios .datepicker-content {\n            padding-top: 48px;\n}\n\n.datepicker.ios .datepicker-header + .datepicker-content {\n          padding-top: 0;\n}\n\n.datepicker {\n\n    /* assurance */\n}\n\n.datepicker.assurance {\n    position: relative;\n}\n\n.datepicker.assurance .datepicker-col-1 {\n            margin: 0;\n}\n\n.datepicker.assurance .datepicker-col-1:first-child {\n        -webkit-box-flex: 2;\n            -ms-flex: 2;\n                flex: 2;\n    text-align: left;\n}\n\n.datepicker.assurance .datepicker-col-1:last-child {\n    text-align: right;\n}\n\n.datepicker.assurance .datepicker-header {\n            color: rgb(59, 59, 59);\n            padding: 0 3.5em;\n}\n\n.datepicker.assurance .datepicker-viewport::after {\n    background: -webkit-gradient(linear,left top, left bottom,from(#fff),color-stop(52%, rgba(245, 245, 245, 0)),color-stop(48%, rgba(245, 245, 245, 0)),to(#fff));\n    background: linear-gradient(#fff,rgba(245, 245, 245, 0)52%,rgba(245, 245, 245, 0)48%,#fff);\n}\n\n.datepicker.assurance .datepicker-wheel {\n            border-top: 1px solid #dbdbdb;\n            border-bottom: 1px solid #dbdbdb;\n}\n\n.datepicker.assurance .datepicker-scroll li {\n                color: rgb(59, 59, 59);\n            }\n\n.datepicker.assurance .datepicker-scroll li.disabled {\n                color: rgb(191, 191, 191);\n            }\n\n.datepicker.assurance .datepicker-navbar {\n            display: none;\n}\n\n.datepicker.assurance .datepicker-navbar-btn {\n            color: #007aff;\n}\n\n.datepicker.assurance .datepicker-navbar-btn:nth-child(2) {\n    float: left;\n}\n\n.datepicker.assurance .datepicker-content {\n            padding: 0;\n}\n\n.datepicker.assurance .datepicker-header + .datepicker-content {\n          padding-top: 0;\n}\n\n.datepicker {\n\n    /* android */\n}\n\n.datepicker.android, .datepicker.android-dark {\n    background-color: #f5f5f5;\n}\n\n.datepicker.android .datepicker-header, .datepicker.android-dark .datepicker-header {\n            color: #31b6e7;\n            border-bottom: 2px solid #31b6e7;\n}\n\n.datepicker.android .datepicker-col-1, .datepicker.android-dark .datepicker-col-1 {margin: 0 .625em;\n}\n\n.datepicker.android .datepicker-viewport::after, .datepicker.android-dark .datepicker-viewport::after {\n    background-image: -webkit-gradient(linear,left top, left bottom,from(#f5f5f5),color-stop(52%, rgba(245, 245, 245, 0)),color-stop(48%, rgba(245, 245, 245, 0)),to(#f5f5f5));\n    background-image: linear-gradient(#f5f5f5,rgba(245, 245, 245, 0)52%,rgba(245, 245, 245, 0)48%,#f5f5f5);\n}\n\n.datepicker.android .datepicker-wheel, .datepicker.android-dark .datepicker-wheel {\n            border-top: 2px solid #31b6e7;\n            border-bottom: 2px solid #31b6e7;\n}\n\n.datepicker.android .datepicker-scroll li, .datepicker.android-dark .datepicker-scroll li {\n                font-size: 1.125em;\n                color: rgb(56, 56, 56);\n            }\n\n.datepicker.android .datepicker-scroll li.disabled, .datepicker.android-dark .datepicker-scroll li.disabled {\n                color: rgb(188, 188, 188);\n            }\n\n.datepicker.android .datepicker-navbar, .datepicker.android-dark .datepicker-navbar {\n            display: -webkit-box;\n            display: -ms-flexbox;\n            display: flex;\n            border-top: 1px solid #d9d4d4;\n            padding: 0;\n}\n\n.datepicker.android .datepicker-navbar-btn, .datepicker.android-dark .datepicker-navbar-btn {\n            padding: 0;\n            color: #000;\n            -webkit-box-flex: 1;\n                -ms-flex: 1;\n                    flex: 1;\n}\n\n.datepicker.android .datepicker-navbar-btn:nth-child(2), .datepicker.android-dark .datepicker-navbar-btn:nth-child(2) {\n    border-left: 1px solid #d9d4d4;\n}\n\n.datepicker {\n\n    /* android-dark */\n}\n\n.datepicker.android-dark {\n    background-color: #292829;\n}\n\n.datepicker.android-dark .datepicker-viewport::after {\n    background-image: -webkit-gradient(linear,left top, left bottom,from(#282828),color-stop(52%, rgba(40, 40, 40, 0)),color-stop(48%, rgba(40, 40, 40, 0)),to(#282828));\n    background-image: linear-gradient(#282828,rgba(40, 40, 40, 0)52%,rgba(40, 40, 40, 0)48%,#282828);\n}\n\n.datepicker.android-dark .datepicker-scroll li {\n                color: rgb(199, 199, 199);\n            }\n\n.datepicker.android-dark .datepicker-scroll li.disabled {\n                color: rgb(88, 88, 88);\n            }\n\n.datepicker.android-dark .datepicker-navbar { border-color: #424542;\n}\n\n.datepicker.android-dark .datepicker-navbar-btn {\n            color: #fff;\n}\n\n.datepicker.android-dark .datepicker-navbar-btn:nth-child(2) {\n    border-color: #424542;\n}\n", {});
-
-/**
- * @module time工具
- */
-
-function throwIfInvalidDate(date) {
-    if (Object.prototype.toString.call(date, null) !== '[object Date]') {
-        throw new Error('参数类型不对');
-    }
-}
-
-function daysInMonth(year, month) {
-    return new Date(year, month + 1, 0).getDate();
-}
-
-/**
- * 对Date的扩展，将 Date 转化为指定格式的String
- * @param  {Date}       日期
- * @return {String}     字符串格式
- */
-function convertDate(date, format) {
-    var str = format;
-    var o = {
-        'M+': date.getMonth() + 1,
-        'D+': date.getDate(),
-        'h+': date.getHours(),
-        'm+': date.getMinutes(),
-        's+': date.getSeconds()
-    };
-    if (/(Y+)/.test(format)) {
-        str = str.replace(RegExp.$1, date.getFullYear().toString().substr(4 - RegExp.$1.length));
-    }
-
-    for (var k in o) {
-        // eslint-disable-line
-        if (new RegExp('(' + k + ')').test(format)) {
-            str = str.replace(RegExp.$1, RegExp.$1.length === 1 ? o[k] : ('00' + o[k]).substr(o[k].toString().length));
-        }
-    }
-
-    return str;
-}
-
-/**
- * 获取相对日期的偏移日期
- * @param  {Date}       日期
- * @return {number}     相对的天数
- */
-function nextYear(now) {
-    var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
-    throwIfInvalidDate(now);
-    var date = new Date(now.getFullYear() + index, now.getMonth(), now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds());
-    return date;
-}
-
-function nextMonth(now) {
-    var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
-    throwIfInvalidDate(now);
-    var year = now.getFullYear();
-    var month = now.getMonth() + index;
-    var dayOfMonth = Math.min(now.getDate(), daysInMonth(year, month));
-    var date = new Date(year, month, dayOfMonth, now.getHours(), now.getMinutes(), now.getSeconds());
-    return date;
-}
-
-function nextDate(now) {
-    var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
-    throwIfInvalidDate(now);
-    var date = new Date(now.getTime() + index * 24 * 60 * 60 * 1000);
-    return date;
-}
-
-function nextHour(now) {
-    var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
-    throwIfInvalidDate(now);
-    var date = new Date(now.getTime() + index * 60 * 60 * 1000);
-    return date;
-}
-
-function nextMinute(now) {
-    var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
-    throwIfInvalidDate(now);
-    var date = new Date(now.getTime() + index * 60 * 1000);
-    return date;
-}
-
-function nextSecond(now) {
-    var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
-    throwIfInvalidDate(now);
-    var date = new Date(now.getTime() + index * 1000);
-    return date;
-}
-
-var TimeUtil = Object.freeze({
-	convertDate: convertDate,
-	nextYear: nextYear,
-	nextMonth: nextMonth,
-	nextDate: nextDate,
-	nextHour: nextHour,
-	nextMinute: nextMinute,
-	nextSecond: nextSecond
-});
+__$styleInject(".picker-wheel-modal {\n    position: fixed;\n    right: 0;\n    bottom: 0;\n    width: 100%;\n    height: 100%;\n    background-color: rgba(0, 0, 0, .6);\n    z-index: 999;\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n}\n\n.picker-wheel {\n    position: absolute;\n    left: 0;\n    bottom: 0;\n    width: 100%;\n    z-index: 1;\n    font-size: 16px;\n    text-align: center;\n    font-family: arial,verdana,sans-serif;\n    -webkit-box-sizing: content-box;\n            box-sizing: content-box;\n    -webkit-font-smoothing: antialiased;\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n}\n\n.picker-wheel .picker-wheel-header {\n        padding: 0 .5em;\n        min-height: 2em;\n        line-height: 2em;\n        font-size: 1.125em;\n    }\n\n.picker-wheel .picker-wheel-navbar {\n        padding: 0 .5em .5em .5em;\n        overflow: hidden;\n    }\n\n.picker-wheel .picker-wheel-navbar-btn {\n        height: 2.5em;\n        line-height: 2.5em;\n        float: right;\n        padding: 0 1em;\n        cursor: pointer;\n    }\n\n.picker-wheel .picker-wheel-content {\n        display: -webkit-box;\n        display: -ms-flexbox;\n        display: flex;\n        padding: .5em .25em;\n    }\n\n.picker-wheel .picker-wheel-col-1 {\n        -webkit-box-flex: 1;\n            -ms-flex: 1;\n                flex: 1;\n        margin: 0 .25em;\n    }\n\n.picker-wheel .picker-wheel-viewport {\n        height: 200px;\n        position: relative;\n        overflow: hidden\n    }\n\n.picker-wheel .picker-wheel-viewport::after {\n    content: '';\n    position: absolute;\n    z-index: 2;\n    top: 0;\n    right: 0;\n    bottom: 0;\n    left: 0;\n    pointer-events: none;\n}\n\n.picker-wheel .picker-wheel-wheel {\n        position: absolute;\n        height: 40px;\n        top: 50%;\n        margin-top: -20px;\n        width: 100%;\n    }\n\n.picker-wheel .picker-wheel-scroll {\n        list-style-type: none;\n        padding: 0\n    }\n\n.picker-wheel .picker-wheel-scroll>li {\n    height: 40px;\n    line-height: 40px;\n    font-size: 1.375em;\n    cursor: pointer;\n}\n\n.picker-wheel {\n\n    /* default */\n}\n\n.picker-wheel.default {\n    background-color: #f7f7f7;\n}\n\n.picker-wheel.default .picker-wheel-header {\n            color: #4eccc4;\n}\n\n.picker-wheel.default .picker-wheel-wheel {\n            border-top: 1px solid #4eccc4;\n            border-bottom: 1px solid #4eccc4;\n}\n\n.picker-wheel.default .picker-wheel-scroll li {\n                color: rgb(59, 59, 59);\n            }\n\n.picker-wheel.default .picker-wheel-scroll li.disabled {\n                color: rgb(191, 191, 191);\n            }\n\n.picker-wheel.default .picker-wheel-navbar-btn {\n            color: #4eccc4;\n}\n\n.picker-wheel {\n\n    /* dark */\n}\n\n.picker-wheel.dark {\n    background-color: #263238;\n}\n\n.picker-wheel.dark .picker-wheel-header {\n            color: #50ccc4;\n}\n\n.picker-wheel.dark .picker-wheel-wheel {\n            border-top: 1px solid #50ccc4;\n            border-bottom: 1px solid #50ccc4;\n}\n\n.picker-wheel.dark .picker-wheel-scroll li {\n                color: rgb(201, 203, 204);\n            }\n\n.picker-wheel.dark .picker-wheel-scroll li.disabled {\n                color: rgb(87, 96, 100);\n            }\n\n.picker-wheel.dark .picker-wheel-navbar-btn {\n            color: #50ccc4;\n}\n\n.picker-wheel {\n\n    /* ios */\n}\n\n.picker-wheel.ios {\n    background-color: #f7f7f7;\n}\n\n.picker-wheel.ios .picker-wheel-col-1 {margin: 0;\n}\n\n.picker-wheel.ios .picker-wheel-header {\n            color: rgb(59, 59, 59);\n            padding: 0 3.5em;\n}\n\n.picker-wheel.ios .picker-wheel-viewport::after {\n    background: -webkit-gradient(linear,left top, left bottom,from(#f7f7f7),color-stop(52%, rgba(245, 245, 245, 0)),color-stop(48%, rgba(245, 245, 245, 0)),to(#f7f7f7));\n    background: linear-gradient(#f7f7f7,rgba(245, 245, 245, 0)52%,rgba(245, 245, 245, 0)48%,#f7f7f7);\n}\n\n.picker-wheel.ios .picker-wheel-wheel {\n            border-top: 1px solid #dbdbdb;\n            border-bottom: 1px solid #dbdbdb;\n}\n\n.picker-wheel.ios .picker-wheel-scroll li {\n                color: rgb(59, 59, 59);\n            }\n\n.picker-wheel.ios .picker-wheel-scroll li.disabled {\n                color: rgb(191, 191, 191);\n            }\n\n.picker-wheel.ios .picker-wheel-navbar {\n            position: absolute;\n            z-index: 2;\n            top: 0;\n            left: 0;\n            width: 100%;\n            padding: 0;\n            border-bottom: 1px solid #acacac;\n}\n\n.picker-wheel.ios .picker-wheel-navbar-btn {\n            color: #007aff;\n}\n\n.picker-wheel.ios .picker-wheel-navbar-btn:nth-child(2) {\n    float: left;\n}\n\n.picker-wheel.ios .picker-wheel-content {\n            padding-top: 48px;\n}\n\n.picker-wheel.ios .picker-wheel-header + .picker-wheel-content {\n          padding-top: 0;\n}\n\n.picker-wheel {\n\n    /* assurance */\n}\n\n.picker-wheel.assurance {\n    position: relative;\n}\n\n.picker-wheel.assurance .picker-wheel-col-1 {\n            margin: 0;\n}\n\n.picker-wheel.assurance .picker-wheel-col-1:first-child {\n        -webkit-box-flex: 2;\n            -ms-flex: 2;\n                flex: 2;\n    text-align: left;\n}\n\n.picker-wheel.assurance .picker-wheel-col-1:last-child {\n    text-align: right;\n}\n\n.picker-wheel.assurance .picker-wheel-header {\n            color: rgb(59, 59, 59);\n            padding: 0 3.5em;\n}\n\n.picker-wheel.assurance .picker-wheel-viewport::after {\n    background: -webkit-gradient(linear,left top, left bottom,from(#fff),color-stop(52%, rgba(245, 245, 245, 0)),color-stop(48%, rgba(245, 245, 245, 0)),to(#fff));\n    background: linear-gradient(#fff,rgba(245, 245, 245, 0)52%,rgba(245, 245, 245, 0)48%,#fff);\n}\n\n.picker-wheel.assurance .picker-wheel-wheel {\n            border-top: 1px solid #dbdbdb;\n            border-bottom: 1px solid #dbdbdb;\n}\n\n.picker-wheel.assurance .picker-wheel-scroll li {\n                color: rgb(59, 59, 59);\n            }\n\n.picker-wheel.assurance .picker-wheel-scroll li.disabled {\n                color: rgb(191, 191, 191);\n            }\n\n.picker-wheel.assurance .picker-wheel-navbar {\n            display: none;\n}\n\n.picker-wheel.assurance .picker-wheel-navbar-btn {\n            color: #007aff;\n}\n\n.picker-wheel.assurance .picker-wheel-navbar-btn:nth-child(2) {\n    float: left;\n}\n\n.picker-wheel.assurance .picker-wheel-content {\n            padding: 0;\n}\n\n.picker-wheel.assurance .picker-wheel-header + .picker-wheel-content {\n          padding-top: 0;\n}\n\n.picker-wheel {\n\n    /* android */\n}\n\n.picker-wheel.android, .picker-wheel.android-dark {\n    background-color: #f5f5f5;\n}\n\n.picker-wheel.android .picker-wheel-header, .picker-wheel.android-dark .picker-wheel-header {\n            color: #31b6e7;\n            border-bottom: 2px solid #31b6e7;\n}\n\n.picker-wheel.android .picker-wheel-col-1, .picker-wheel.android-dark .picker-wheel-col-1 {margin: 0 .625em;\n}\n\n.picker-wheel.android .picker-wheel-viewport::after, .picker-wheel.android-dark .picker-wheel-viewport::after {\n    background-image: -webkit-gradient(linear,left top, left bottom,from(#f5f5f5),color-stop(52%, rgba(245, 245, 245, 0)),color-stop(48%, rgba(245, 245, 245, 0)),to(#f5f5f5));\n    background-image: linear-gradient(#f5f5f5,rgba(245, 245, 245, 0)52%,rgba(245, 245, 245, 0)48%,#f5f5f5);\n}\n\n.picker-wheel.android .picker-wheel-wheel, .picker-wheel.android-dark .picker-wheel-wheel {\n            border-top: 2px solid #31b6e7;\n            border-bottom: 2px solid #31b6e7;\n}\n\n.picker-wheel.android .picker-wheel-scroll li, .picker-wheel.android-dark .picker-wheel-scroll li {\n                font-size: 1.125em;\n                color: rgb(56, 56, 56);\n            }\n\n.picker-wheel.android .picker-wheel-scroll li.disabled, .picker-wheel.android-dark .picker-wheel-scroll li.disabled {\n                color: rgb(188, 188, 188);\n            }\n\n.picker-wheel.android .picker-wheel-navbar, .picker-wheel.android-dark .picker-wheel-navbar {\n            display: -webkit-box;\n            display: -ms-flexbox;\n            display: flex;\n            border-top: 1px solid #d9d4d4;\n            padding: 0;\n}\n\n.picker-wheel.android .picker-wheel-navbar-btn, .picker-wheel.android-dark .picker-wheel-navbar-btn {\n            padding: 0;\n            color: #000;\n            -webkit-box-flex: 1;\n                -ms-flex: 1;\n                    flex: 1;\n}\n\n.picker-wheel.android .picker-wheel-navbar-btn:nth-child(2), .picker-wheel.android-dark .picker-wheel-navbar-btn:nth-child(2) {\n    border-left: 1px solid #d9d4d4;\n}\n\n.picker-wheel {\n\n    /* android-dark */\n}\n\n.picker-wheel.android-dark {\n    background-color: #292829;\n}\n\n.picker-wheel.android-dark .picker-wheel-viewport::after {\n    background-image: -webkit-gradient(linear,left top, left bottom,from(#282828),color-stop(52%, rgba(40, 40, 40, 0)),color-stop(48%, rgba(40, 40, 40, 0)),to(#282828));\n    background-image: linear-gradient(#282828,rgba(40, 40, 40, 0)52%,rgba(40, 40, 40, 0)48%,#282828);\n}\n\n.picker-wheel.android-dark .picker-wheel-scroll li {\n                color: rgb(199, 199, 199);\n            }\n\n.picker-wheel.android-dark .picker-wheel-scroll li.disabled {\n                color: rgb(88, 88, 88);\n            }\n\n.picker-wheel.android-dark .picker-wheel-navbar { border-color: #424542;\n}\n\n.picker-wheel.android-dark .picker-wheel-navbar-btn {\n            color: #fff;\n}\n\n.picker-wheel.android-dark .picker-wheel-navbar-btn:nth-child(2) {\n    border-color: #424542;\n}\n", {});
 
 function shallowEqual(prev, next) {
     if (prev === next) return true;
@@ -429,42 +321,10 @@ var possibleConstructorReturn = function (self, call) {
   return call && (typeof call === "object" || typeof call === "function") ? call : self;
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var toConsumableArray = function (arr) {
-  if (Array.isArray(arr)) {
-    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
-
-    return arr2;
-  } else {
-    return Array.from(arr);
-  }
-};
-
 /**
  * @module Date组件
  */
-var DATE_HEIGHT = 40; // 每个日期的高度
-var DATE_LENGTH = 10; // 日期的个数
-var MIDDLE_INDEX = Math.floor(DATE_LENGTH / 2); // 日期数组中间值的索引
-var MIDDLE_Y = -DATE_HEIGHT * MIDDLE_INDEX; // translateY值
-
+var ITEM_HEIGHT = 40; // 每个日期的高度
 var isUndefined = function isUndefined(val) {
     return typeof val === 'undefined';
 };
@@ -476,64 +336,40 @@ var isFunction = function isFunction(val) {
 };
 
 /**
- * 根据格式获取时间滑动的类别
- * @param  {String} format 格式
- * @return {string}        类别名称
- */
-var getTimeType = function getTimeType(format) {
-    var typeMap = {
-        Y: 'Year',
-        M: 'Month',
-        D: 'Date',
-        h: 'Hour',
-        m: 'Minute',
-        s: 'Second'
-    };
-
-    for (var key in typeMap) {
-        if (typeMap.hasOwnProperty(key)) {
-            if (~format.indexOf(key)) {
-                return typeMap[key];
-            }
-        }
-    }
-
-    throw new Error('时间格式必须包含 Y, M, D, h, m 或 s字母');
-};
-
-/**
  * Class Date组件类
  * @extends Component
  */
-var DatePickerItem = function (_Component) {
-    inherits(DatePickerItem, _Component);
+var PickerWheelColumn = function (_Component) {
+    inherits(PickerWheelColumn, _Component);
 
-    function DatePickerItem(props) {
-        classCallCheck(this, DatePickerItem);
+    function PickerWheelColumn(props) {
+        classCallCheck(this, PickerWheelColumn);
 
-        var _this = possibleConstructorReturn(this, (DatePickerItem.__proto__ || Object.getPrototypeOf(DatePickerItem)).call(this, props));
+        var _this = possibleConstructorReturn(this, (PickerWheelColumn.__proto__ || Object.getPrototypeOf(PickerWheelColumn)).call(this, props));
 
         _this.animating = false; // 判断是否在transition过渡动画之中
         _this.touchY = 0; // 保存touchstart的pageY
         _this.translateY = 0; // 容器偏移的距离
-        _this.currentIndex = MIDDLE_INDEX; // 滑动中当前日期的索引
-        _this.moveDateCount = 0; // 一次滑动移动了多少个时间
+        _this.moveItemCount = 0; // 一次滑动移动了多少个时间
+
+        _this.items = props.items;
+        _this.middleIndex = Math.floor(_this.items.length / 2);
+        _this.middleY = -ITEM_HEIGHT * _this.middleIndex;
+        _this.currentIndex = _this.middleIndex; // 滑动中当前日期的索引
 
         _this.state = {
-            translateY: MIDDLE_Y,
-            marginTop: (_this.currentIndex - MIDDLE_INDEX) * DATE_HEIGHT
+            translateY: _this.middleY,
+            marginTop: (_this.currentIndex - _this.middleIndex) * ITEM_HEIGHT
         };
 
         // 设置时间选择器单元的类别
         if (isArray(props.format)) {
-            _this.typeName = getTimeType(props.format[0]);
             _this.format = props.format[0];
             if (isFunction(props.format[1])) {
                 _this.formatTransform = props.format[1];
             }
         } else {
             _this.format = props.format;
-            _this.typeName = getTimeType(props.format);
         }
 
         _this.renderDatepickerItem = _this.renderDatepickerItem.bind(_this);
@@ -544,12 +380,7 @@ var DatePickerItem = function (_Component) {
         return _this;
     }
 
-    createClass(DatePickerItem, [{
-        key: 'componentWillMount',
-        value: function componentWillMount() {
-            this._iniDates(this.props.value);
-        }
-    }, {
+    createClass(PickerWheelColumn, [{
         key: 'componentDidMount',
         value: function componentDidMount() {
             var viewport = this.viewport;
@@ -561,14 +392,13 @@ var DatePickerItem = function (_Component) {
     }, {
         key: 'componentWillReceiveProps',
         value: function componentWillReceiveProps(nextProps) {
-            if (nextProps.value.getTime() === this.props.value.getTime()) {
+            if (nextProps.value === this.props.value) {
                 return;
             }
-            this._iniDates(nextProps.value);
-            this.currentIndex = MIDDLE_INDEX;
+            this.currentIndex = this.middleIndex;
             this.setState({
-                translateY: MIDDLE_Y,
-                marginTop: (this.currentIndex - MIDDLE_INDEX) * DATE_HEIGHT
+                translateY: this.middleY,
+                marginTop: (this.currentIndex - this.middleIndex) * ITEM_HEIGHT
             });
         }
 
@@ -584,7 +414,7 @@ var DatePickerItem = function (_Component) {
     }, {
         key: 'shouldComponentUpdate',
         value: function shouldComponentUpdate(nextProps, nextState) {
-            return nextProps.value.getTime() !== this.props.value.getTime() || !shallowEqual(nextState, this.state);
+            return nextProps.value !== this.props.value || !shallowEqual(nextState, this.state);
         }
     }, {
         key: 'componentWillUnmount',
@@ -596,40 +426,24 @@ var DatePickerItem = function (_Component) {
             viewport.removeEventListener('mousedown', this.handleContentMouseDown, false);
         }
     }, {
-        key: '_iniDates',
-        value: function _iniDates(date) {
-            var _this2 = this;
-
-            var typeName = this.typeName;
-            var dates = Array.apply(undefined, toConsumableArray(Array(DATE_LENGTH))).map(function (value, index) {
-                return TimeUtil['next' + typeName](date, (index - MIDDLE_INDEX) * _this2.props.step);
-            });
-            this.setState({ dates: dates });
-        }
-    }, {
-        key: '_updateDates',
-        value: function _updateDates(direction) {
-            var typeName = this.typeName;
-            var dates = this.state.dates;
-
+        key: '_updateStuff',
+        value: function _updateStuff(direction) {
             if (direction === 1) {
                 this.currentIndex++;
                 this.setState({
-                    dates: [].concat(toConsumableArray(dates.slice(1)), [TimeUtil['next' + typeName](dates[dates.length - 1], this.props.step)]),
-                    marginTop: (this.currentIndex - MIDDLE_INDEX) * DATE_HEIGHT
+                    marginTop: (this.currentIndex - this.middleIndex) * ITEM_HEIGHT
                 });
             } else {
                 this.currentIndex--;
                 this.setState({
-                    dates: [TimeUtil['next' + typeName](dates[0], -this.props.step)].concat(toConsumableArray(dates.slice(0, dates.length - 1))),
-                    marginTop: (this.currentIndex - MIDDLE_INDEX) * DATE_HEIGHT
+                    marginTop: (this.currentIndex - this.middleIndex) * ITEM_HEIGHT
                 });
             }
         }
     }, {
-        key: '_checkIsUpdateDates',
-        value: function _checkIsUpdateDates(direction, translateY) {
-            return direction === 1 ? this.currentIndex * DATE_HEIGHT + DATE_HEIGHT / 2 < -translateY : this.currentIndex * DATE_HEIGHT - DATE_HEIGHT / 2 > -translateY;
+        key: '_checkIsUpdateItems',
+        value: function _checkIsUpdateItems(direction, translateY) {
+            return direction === 1 ? this.currentIndex * ITEM_HEIGHT + ITEM_HEIGHT / 2 < -translateY : this.currentIndex * ITEM_HEIGHT - ITEM_HEIGHT / 2 > -translateY;
         }
 
         /**
@@ -653,15 +467,15 @@ var DatePickerItem = function (_Component) {
     }, {
         key: '_moveToNext',
         value: function _moveToNext(direction) {
-            var date = this.state.dates[MIDDLE_INDEX];
+            var value = this.items[this.middleIndex];
             var _props = this.props,
                 max = _props.max,
                 min = _props.min;
 
-            if (direction === -1 && date.getTime() < min.getTime() && this.moveDateCount) {
-                this._updateDates(1);
-            } else if (direction === 1 && date.getTime() > max.getTime() && this.moveDateCount) {
-                this._updateDates(-1);
+            if (direction === -1 && value < min && this.moveItemCount) {
+                this._updateStuff(1);
+            } else if (direction === 1 && value > max && this.moveItemCount) {
+                this._updateStuff(-1);
             }
 
             this._moveTo(this.refs.scroll, this.currentIndex);
@@ -677,21 +491,21 @@ var DatePickerItem = function (_Component) {
     }, {
         key: '_moveTo',
         value: function _moveTo(obj, currentIndex) {
-            var _this3 = this;
+            var _this2 = this;
 
             this.animating = true;
 
             addPrefixCss(obj, { transition: 'transform .2s ease-out' });
 
             this.setState({
-                translateY: -currentIndex * DATE_HEIGHT
+                translateY: -currentIndex * ITEM_HEIGHT
             });
 
             // NOTE: There is no transitionend, setTimeout is used instead.
             setTimeout(function () {
-                _this3.animating = false;
-                _this3.props.onSelect(_this3.state.dates[MIDDLE_INDEX]);
-                _this3._clearTransition(_this3.refs.scroll);
+                _this2.animating = false;
+                _this2.props.onSelect(_this2.items[_this2.middleIndex]);
+                _this2._clearTransition(_this2.refs.scroll);
             }, 200);
         }
     }, {
@@ -700,7 +514,7 @@ var DatePickerItem = function (_Component) {
             this.touchY = !isUndefined(event.targetTouches) && !isUndefined(event.targetTouches[0]) ? event.targetTouches[0].pageY : event.pageY;
 
             this.translateY = this.state.translateY;
-            this.moveDateCount = 0;
+            this.moveItemCount = 0;
         }
     }, {
         key: 'handleMove',
@@ -712,19 +526,19 @@ var DatePickerItem = function (_Component) {
             var direction = dir > 0 ? -1 : 1;
 
             // 日期最小值，最大值限制
-            var date = this.state.dates[MIDDLE_INDEX];
+            var value = this.items[this.middleIndex];
             var _props2 = this.props,
                 max = _props2.max,
                 min = _props2.min;
 
-            if (date.getTime() < min.getTime() || date.getTime() > max.getTime()) {
+            if (value < min || value > max) {
                 return;
             }
 
             // 检测是否更新日期列表
-            if (this._checkIsUpdateDates(direction, translateY)) {
-                this.moveDateCount = direction > 0 ? this.moveDateCount + 1 : this.moveDateCount - 1;
-                this._updateDates(direction);
+            if (this._checkIsUpdateItems(direction, translateY)) {
+                this.moveItemCount = direction > 0 ? this.moveItemCount + 1 : this.moveItemCount - 1;
+                this._updateStuff(direction);
             }
 
             this.setState({ translateY: translateY });
@@ -794,27 +608,22 @@ var DatePickerItem = function (_Component) {
          */
 
     }, {
-        key: 'renderDatepickerItem',
-        value: function renderDatepickerItem(date, index) {
-            var className = date < this.props.min || date > this.props.max ? 'disabled' : '';
-
-            var formatDate = convertDate(date, this.format);
-            if (this.formatTransform) {
-                formatDate = this.formatTransform(formatDate);
-            }
+        key: 'renderPickerWheelItem',
+        value: function renderPickerWheelItem(value, index) {
+            var className = value < this.props.min || value > this.props.max ? 'disabled' : '';
 
             return React__default.createElement(
                 'li',
                 {
                     key: index,
                     className: className },
-                formatDate
+                value
             );
         }
     }, {
         key: 'render',
         value: function render() {
-            var _this4 = this;
+            var _this3 = this;
 
             var scrollStyle = formatCss({
                 transform: 'translateY(' + this.state.translateY + 'px)',
@@ -823,65 +632,64 @@ var DatePickerItem = function (_Component) {
 
             return React__default.createElement(
                 'div',
-                { className: 'datepicker-col-1' },
+                { className: 'picker-wheel-col-1' },
                 React__default.createElement(
                     'div',
                     {
                         ref: function ref(viewport) {
-                            return _this4.viewport = viewport;
+                            return _this3.viewport = viewport;
                         } // eslint-disable-line
-                        , className: 'datepicker-viewport' },
+                        , className: 'picker-wheel-viewport' },
                     React__default.createElement(
                         'div',
-                        { className: 'datepicker-wheel' },
+                        { className: 'picker-wheel-wheel' },
                         React__default.createElement(
                             'ul',
                             {
                                 ref: 'scroll',
-                                className: 'datepicker-scroll',
+                                className: 'picker-wheel-scroll',
                                 style: scrollStyle },
-                            this.state.dates.map(this.renderDatepickerItem)
+                            this.items.map(this.renderPickerWheelItem)
                         )
                     )
                 )
             );
         }
     }]);
-    return DatePickerItem;
+    return PickerWheelColumn;
 }(React.Component);
 
 /**
- * @module DatePicker Component
+ * @module PickerWheel Component
  */
 
 /**
- * Class DatePicker Component Class
+ * Class PickerWheel Component Class
  * @extends Component
  */
-var DatePicker = function (_Component) {
-    inherits(DatePicker, _Component);
+var PickerWheel = function (_Component) {
+    inherits(PickerWheel, _Component);
 
-    function DatePicker(props) {
-        classCallCheck(this, DatePicker);
+    function PickerWheel(props) {
+        classCallCheck(this, PickerWheel);
 
-        var _this = possibleConstructorReturn(this, (DatePicker.__proto__ || Object.getPrototypeOf(DatePicker)).call(this, props));
+        var _this = possibleConstructorReturn(this, (PickerWheel.__proto__ || Object.getPrototypeOf(PickerWheel)).call(this, props));
 
         _this.state = {
-            value: nextDate(_this.props.value)
+            value: _this.props.value
         };
 
         _this.handleFinishBtnClick = _this.handleFinishBtnClick.bind(_this);
-        _this.handleDateSelect = _this.handleDateSelect.bind(_this);
+        _this.handleItemSelect = _this.handleItemSelect.bind(_this);
         return _this;
     }
 
-    createClass(DatePicker, [{
+    createClass(PickerWheel, [{
         key: 'componentWillReceiveProps',
         value: function componentWillReceiveProps(nextProps) {
             // update value of state
-            var date = nextDate(nextProps.value);
-            if (date.getTime() !== this.state.value.getTime()) {
-                this.setState({ value: date });
+            if (nextProps.value !== this.state.value) {
+                this.setState({ value: nextProps.value });
             }
         }
 
@@ -898,11 +706,11 @@ var DatePicker = function (_Component) {
                 min = _props.min,
                 max = _props.max;
 
-            if (value.getTime() > max.getTime()) {
+            if (value > max) {
                 this.setState({ value: max });
             }
 
-            if (value.getTime() < min.getTime()) {
+            if (value < min) {
                 this.setState({ value: min });
             }
         }
@@ -919,8 +727,7 @@ var DatePicker = function (_Component) {
     }, {
         key: 'shouldComponentUpdate',
         value: function shouldComponentUpdate(nextProps, nextState) {
-            var date = nextDate(nextState.value);
-            return date.getTime() !== this.state.value.getTime() || PureRender.shouldComponentUpdate(nextProps, nextState, this.props, this.state);
+            return nextProps.value !== this.state.value || PureRender.shouldComponentUpdate(nextProps, nextState, this.props, this.state);
         }
 
         /**
@@ -940,8 +747,8 @@ var DatePicker = function (_Component) {
          */
 
     }, {
-        key: 'handleDateSelect',
-        value: function handleDateSelect(value) {
+        key: 'handleItemSelect',
+        value: function handleItemSelect(value) {
             this.setState({ value: value });
             this.props.onChange && this.props.onChange(value);
         }
@@ -954,19 +761,15 @@ var DatePicker = function (_Component) {
     }, {
         key: 'render',
         value: function render() {
-            var _this2 = this;
-
             var _props2 = this.props,
                 min = _props2.min,
                 max = _props2.max,
+                items = _props2.items,
                 theme = _props2.theme,
-                dateFormat = _props2.dateFormat,
                 confirmText = _props2.confirmText,
                 cancelText = _props2.cancelText,
-                showFormat = _props2.showFormat,
                 showHeader = _props2.showHeader,
-                customHeader = _props2.customHeader,
-                dateSteps = _props2.dateSteps;
+                customHeader = _props2.customHeader;
 
             var value = this.state.value;
             var themeClassName = ['default', 'dark', 'ios', 'android', 'android-dark', 'assurance'].indexOf(theme) === -1 ? 'default' : theme;
@@ -974,40 +777,38 @@ var DatePicker = function (_Component) {
             return React__default.createElement(
                 'div',
                 {
-                    className: 'datepicker ' + themeClassName },
+                    className: 'picker-wheel ' + themeClassName },
                 showHeader && React__default.createElement(
                     'div',
-                    { className: 'datepicker-header' },
-                    customHeader || convertDate(value, showFormat)
+                    { className: 'picker-wheel-header' },
+                    customHeader || value
                 ),
                 React__default.createElement(
                     'div',
-                    { className: 'datepicker-content' },
-                    dateFormat.map(function (format, index) {
-                        return React__default.createElement(DatePickerItem, {
-                            key: index,
-                            step: dateSteps[index] || 1,
-                            value: value,
-                            min: min,
-                            max: max,
-                            format: format,
-                            onSelect: _this2.handleDateSelect });
-                    })
+                    { className: 'picker-wheel-content' },
+                    React__default.createElement(PickerWheelColumn, {
+                        key: index,
+                        step: 1,
+                        value: value,
+                        min: min,
+                        max: max,
+                        items: items,
+                        onSelect: this.handleItemSelect })
                 ),
                 React__default.createElement(
                     'div',
-                    { className: 'datepicker-navbar' },
+                    { className: 'picker-wheel-navbar' },
                     React__default.createElement(
                         'a',
                         {
-                            className: 'datepicker-navbar-btn',
+                            className: 'picker-wheel-navbar-btn',
                             onClick: this.handleFinishBtnClick },
                         confirmText
                     ),
                     React__default.createElement(
                         'a',
                         {
-                            className: 'datepicker-navbar-btn',
+                            className: 'picker-wheel-navbar-btn',
                             onClick: this.props.onCancel },
                         cancelText
                     )
@@ -1015,7 +816,7 @@ var DatePicker = function (_Component) {
             );
         }
     }]);
-    return DatePicker;
+    return PickerWheel;
 }(React.Component);
 
 var renderSubtreeIntoContainer = ReactDOM.unstable_renderSubtreeIntoContainer;
@@ -1067,7 +868,7 @@ Modal.defaultProps = {
     isOpen: false
 };
 
-function EnhanceDatePicker(_ref) {
+function EnhancePickerWheel(_ref) {
     var isOpen = _ref.isOpen,
         props = objectWithoutProperties(_ref, ['isOpen']);
 
@@ -1082,44 +883,42 @@ function EnhanceDatePicker(_ref) {
         {
             style: { display: isOpen ? '' : 'none' },
             onClick: onModalClose,
-            className: 'datepicker-modal' },
-        React__default.createElement(DatePicker, props)
+            className: 'picker-wheel-modal' },
+        React__default.createElement(PickerWheel, props)
     );
 }
 
-function ModalDatePicker(_ref2) {
+function ModalPickerWheel(_ref2) {
     var isPopup = _ref2.isPopup,
         props = objectWithoutProperties(_ref2, ['isPopup']);
 
     if (!isPopup) {
-        return React__default.createElement(DatePicker, props);
+        return React__default.createElement(PickerWheel, props);
     }
 
     return React__default.createElement(
         Modal,
         props,
-        React__default.createElement(EnhanceDatePicker, null)
+        React__default.createElement(EnhancePickerWheel, null)
     );
 }
 
-ModalDatePicker.defaultProps = {
+ModalPickerWheel.defaultProps = {
     isPopup: true,
     isOpen: false,
     theme: 'default',
-    value: new Date(),
-    min: new Date(1970, 0, 1),
-    max: new Date(2050, 0, 1),
+    value: '',
+    //min: new Date(1970, 0, 1),
+    //max: new Date(2050, 0, 1),
+    items: [],
     showHeader: true,
-    dateFormat: ['YYYY', 'M', 'D'],
-    dateSteps: [1, 1, 1],
-    showFormat: 'YYYY/MM/DD',
     confirmText: '完成',
     cancelText: '取消',
     onSelect: function onSelect() {},
     onCancel: function onCancel() {}
 };
 
-return ModalDatePicker;
+return ModalPickerWheel;
 
 })));
-//# sourceMappingURL=react-mobile-datepicker.js.map
+//# sourceMappingURL=react-picker-wheel.js.map
