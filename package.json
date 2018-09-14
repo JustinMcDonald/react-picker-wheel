@@ -1,12 +1,12 @@
 {
   "name": "react-mobile-datepicker",
   "version": "3.0.12",
-  "description": "一个移动端时间选择器react组件",
+  "description": "embedded native react mobile datepicker",
   "main": "./dist/react-mobile-datepicker.js",
   "amdName": "reactMobileDatePicker",
   "minified:main": "dist/react-mobile-datepicker.min.js",
-  "repository": "lanjingling0510/react-mobile-datepicker",
-  "homepage": "https://github.com/lanjingling0510/react-mobile-datepicker#readme",
+  "repository": "JustinMcDonald/react-mobile-datepicker",
+  "homepage": "https://github.com/JustinMcDonald/react-mobile-datepicker#readme",
   "keywords": [
     "react-component",
     "react-datepicker",
@@ -28,21 +28,13 @@
     "coverage": "./node_modules/.bin/nyc report --reporter=text-lcov | ./node_modules/.bin/coveralls",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "postinstall": "npm install && npm run-script build"
+    "postinstall": "npm run-script build"
   },
-  "author": "rainie",
+  "author": "justin",
   "devDependencies": {
     "@storybook/addon-info": "^3.2.12",
     "@storybook/react": "^3.2.12",
     "autoprefixer": "^7.1.5",
-    "babel-core": "^6.9.0",
-    "babel-eslint": "^7.0.0",
-    "babel-loader": "^7.1.2",
-    "babel-polyfill": "^6.9.1",
-    "babel-preset-es2015": "^6.9.0",
-    "babel-preset-es2015-rollup": "^3.0.0",
-    "babel-preset-react": "^6.5.0",
-    "babel-preset-stage-0": "^6.5.0",
     "chai": "^3.5.0",
     "coveralls": "^2.11.9",
     "css-loader": "^0.23.1",
@@ -61,7 +53,6 @@
     "jsdom": "^9.8.3",
     "mocha": "2.3.3",
     "mocha-lcov-reporter": "^1.2.0",
-    "npm-run-all": "^3.0.0",
     "nyc": "^6.6.1",
     "postcss": "^6.0.13",
     "postcss-cssnext": "^3.0.2",
@@ -73,20 +64,29 @@
     "react": ">=15.5.4",
     "react-dom": ">=15.5.4",
     "react-test-renderer": "^15.6.1",
+    "sinon": "^1.17.4",
+    "style-loader": "^0.13.1",
+    "webpack": "^3.3.0",
+    "webpack-dev-server": "^2.5.1"
+  },
+  "peerDependencies": {
+    "babel-core": "^6.9.0",
+    "babel-eslint": "^7.0.0",
+    "babel-loader": "^7.1.2",
+    "babel-polyfill": "^6.9.1",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-es2015-rollup": "^3.0.0",
+    "babel-preset-react": "^6.5.0",
+    "babel-preset-stage-0": "^6.5.0",
+    "npm-run-all": "^3.0.0",
+    "react": ">=0.14",
+    "react-dom": ">=0.14",
     "rollup": "^0.50.0",
     "rollup-plugin-babel": "^2.6.1",
     "rollup-plugin-json": "^2.0.1",
     "rollup-plugin-memory": "^2.0.0",
     "rollup-plugin-postcss": "^0.5.5",
-    "sinon": "^1.17.4",
-    "style-loader": "^0.13.1",
-    "uglify-js": "^3.1.3",
-    "webpack": "^3.3.0",
-    "webpack-dev-server": "^2.5.1"
-  },
-  "peerDependencies": {
-    "react": ">=0.14",
-    "react-dom": ">=0.14"
+    "uglify-js": "^3.1.3"
   },
   "license": "ISC"
 }
