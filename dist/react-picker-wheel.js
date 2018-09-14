@@ -467,7 +467,7 @@ var PickerWheelColumn = function (_Component) {
     }, {
         key: '_moveToNext',
         value: function _moveToNext(direction) {
-            var value = this.items[this.middleIndex];
+            var value = this.items[this.middleIndex].value;
             var _props = this.props,
                 max = _props.max,
                 min = _props.min;
@@ -504,7 +504,7 @@ var PickerWheelColumn = function (_Component) {
             // NOTE: There is no transitionend, setTimeout is used instead.
             setTimeout(function () {
                 _this2.animating = false;
-                _this2.props.onSelect(_this2.items[_this2.middleIndex]);
+                _this2.props.onSelect(_this2.items[_this2.middleIndex].value);
                 _this2._clearTransition(_this2.refs.scroll);
             }, 200);
         }
@@ -526,7 +526,7 @@ var PickerWheelColumn = function (_Component) {
             var direction = dir > 0 ? -1 : 1;
 
             // 日期最小值，最大值限制
-            var value = this.items[this.middleIndex];
+            var value = this.items[this.middleIndex].value;
             var _props2 = this.props,
                 max = _props2.max,
                 min = _props2.min;
@@ -609,15 +609,15 @@ var PickerWheelColumn = function (_Component) {
 
     }, {
         key: 'renderPickerWheelItem',
-        value: function renderPickerWheelItem(value, index) {
-            var className = value < this.props.min || value > this.props.max ? 'disabled' : '';
+        value: function renderPickerWheelItem(item, index) {
+            var className = item.value < this.props.min || item.value > this.props.max ? 'disabled' : '';
 
             return React__default.createElement(
                 'li',
                 {
                     key: index,
                     className: className },
-                value
+                item.text
             );
         }
     }, {
