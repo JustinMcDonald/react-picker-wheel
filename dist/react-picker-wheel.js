@@ -456,15 +456,17 @@ var PickerWheelColumn = function (_Component) {
     }, {
         key: '_updateItemsAndMargin',
         value: function _updateItemsAndMargin(direction) {
+            var items = this.state.items;
+
             if (direction === 1) {
-                var shiftedItem = this.state.items[0];
+                var shiftedItem = items[0];
                 this.currentIndex++;
                 this.setState({
                     items: [].concat(toConsumableArray(items.slice(1)), [shiftedItem]),
                     marginTop: (this.currentIndex - this.middleIndex) * ITEM_HEIGHT
                 });
             } else {
-                var _shiftedItem = this.state.items[this.state.items.length - 1];
+                var _shiftedItem = items[items.length - 1];
                 this.currentIndex--;
                 this.setState({
                     items: [_shiftedItem].concat(toConsumableArray(items.slice(0, items.length - 1))),
