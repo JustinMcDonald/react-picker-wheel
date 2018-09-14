@@ -372,7 +372,7 @@ var PickerWheelColumn = function (_Component) {
             _this.format = props.format;
         }
 
-        _this.renderDatepickerItem = _this.renderDatepickerItem.bind(_this);
+        _this.renderPickerWheelItem = _this.renderPickerWheelItem.bind(_this);
         _this.handleContentTouch = _this.handleContentTouch.bind(_this);
         _this.handleContentMouseDown = _this.handleContentMouseDown.bind(_this);
         _this.handleContentMouseMove = _this.handleContentMouseMove.bind(_this);
