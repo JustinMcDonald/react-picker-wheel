@@ -321,6 +321,34 @@ var possibleConstructorReturn = function (self, call) {
   return call && (typeof call === "object" || typeof call === "function") ? call : self;
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var toConsumableArray = function (arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+    return arr2;
+  } else {
+    return Array.from(arr);
+  }
+};
+
 /**
  * @module Date组件
  */
@@ -352,14 +380,14 @@ var PickerWheelColumn = function (_Component) {
         _this.translateY = 0; // 容器偏移的距离
         _this.moveItemCount = 0; // 一次滑动移动了多少个时间
 
-        _this.items = props.items;
-        _this.middleIndex = Math.floor(_this.items.length / 2);
+        _this.middleIndex = Math.floor(props.items.length / 2);
         _this.middleY = -ITEM_HEIGHT * _this.middleIndex;
         _this.currentIndex = _this.middleIndex; // 滑动中当前日期的索引
 
         _this.state = {
             translateY: _this.middleY,
-            marginTop: (_this.currentIndex - _this.middleIndex) * ITEM_HEIGHT
+            marginTop: (_this.currentIndex - _this.middleIndex) * ITEM_HEIGHT,
+            items: props.items
         };
 
         // 设置时间选择器单元的类别
@@ -426,16 +454,20 @@ var PickerWheelColumn = function (_Component) {
             viewport.removeEventListener('mousedown', this.handleContentMouseDown, false);
         }
     }, {
-        key: '_updateStuff',
-        value: function _updateStuff(direction) {
+        key: '_updateItemsAndMargin',
+        value: function _updateItemsAndMargin(direction) {
             if (direction === 1) {
+                var shiftedItem = this.state.items[0];
                 this.currentIndex++;
                 this.setState({
+                    items: [].concat(toConsumableArray(items.slice(1)), [shiftedItem]),
                     marginTop: (this.currentIndex - this.middleIndex) * ITEM_HEIGHT
                 });
             } else {
+                var _shiftedItem = this.state.items[this.state.items.length - 1];
                 this.currentIndex--;
                 this.setState({
+                    items: [_shiftedItem].concat(toConsumableArray(items.slice(0, items.length - 1))),
                     marginTop: (this.currentIndex - this.middleIndex) * ITEM_HEIGHT
                 });
             }
@@ -467,15 +499,15 @@ var PickerWheelColumn = function (_Component) {
     }, {
         key: '_moveToNext',
         value: function _moveToNext(direction) {
-            var value = this.items[this.middleIndex].value;
+            var value = this.state.items[this.middleIndex].value;
             var _props = this.props,
                 max = _props.max,
                 min = _props.min;
 
             if (direction === -1 && value < min && this.moveItemCount) {
-                this._updateStuff(1);
+                this._updateItemsAndMargin(1);
             } else if (direction === 1 && value > max && this.moveItemCount) {
-                this._updateStuff(-1);
+                this._updateItemsAndMargin(-1);
             }
 
             this._moveTo(this.refs.scroll, this.currentIndex);
@@ -504,7 +536,7 @@ var PickerWheelColumn = function (_Component) {
             // NOTE: There is no transitionend, setTimeout is used instead.
             setTimeout(function () {
                 _this2.animating = false;
-                _this2.props.onSelect(_this2.items[_this2.middleIndex].value);
+                _this2.props.onSelect(_this2.state.items[_this2.middleIndex].value);
                 _this2._clearTransition(_this2.refs.scroll);
             }, 200);
         }
@@ -526,7 +558,7 @@ var PickerWheelColumn = function (_Component) {
             var direction = dir > 0 ? -1 : 1;
 
             // 日期最小值，最大值限制
-            var value = this.items[this.middleIndex].value;
+            var value = this.state.items[this.middleIndex].value;
             var _props2 = this.props,
                 max = _props2.max,
                 min = _props2.min;
@@ -538,7 +570,7 @@ var PickerWheelColumn = function (_Component) {
             // 检测是否更新日期列表
             if (this._checkIsUpdateItems(direction, translateY)) {
                 this.moveItemCount = direction > 0 ? this.moveItemCount + 1 : this.moveItemCount - 1;
-                this._updateStuff(direction);
+                this._updateItemsAndMargin(direction);
             }
 
             this.setState({ translateY: translateY });
@@ -649,7 +681,7 @@ var PickerWheelColumn = function (_Component) {
                                 ref: 'scroll',
                                 className: 'picker-wheel-scroll',
                                 style: scrollStyle },
-                            this.items.map(this.renderPickerWheelItem)
+                            this.state.items.map(this.renderPickerWheelItem)
                         )
                     )
                 )
