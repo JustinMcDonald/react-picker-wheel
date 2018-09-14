@@ -226,10 +226,13 @@
         position: relative;
 
         .datepicker-col-1 {
-            text-align: left;
             margin: 0;
             &:first-child {
                 flex: 2;
+                text-align: left;
+            }
+            &:last-child {
+                text-align: right;
             }
         }
 
