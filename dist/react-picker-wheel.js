@@ -462,6 +462,7 @@ var PickerWheelColumn = function (_Component) {
     }, {
         key: '_updateItemsAndMargin',
         value: function _updateItemsAndMargin(difference) {
+            console.log(difference);
             var items = this.state.items;
 
             if (difference > 0) {
@@ -567,7 +568,7 @@ var PickerWheelColumn = function (_Component) {
                 _this2.animating = false;
                 _this2.props.onSelect(_this2.state.items[_this2.middleIndex].value);
                 _this2._clearTransition(_this2.refs.scroll);
-                _this2._updateItemsAndMargin(additionalIndexesToTravel * direction);
+                //this._updateItemsAndMargin(additionalIndexesToTravel * direction);
             }, fixedAnimationTime);
         }
     }, {
