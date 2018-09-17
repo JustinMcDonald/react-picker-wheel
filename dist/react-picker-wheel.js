@@ -448,8 +448,10 @@ var PickerWheelColumn = function (_Component) {
     }, {
         key: '_iniItems',
         value: function _iniItems(value) {
+            console.log(value);
             var items = this.state.items;
             for (var i = 0; i < items.length; i++) {
+                console.log(items[this.middleIndex].value);
                 if (items[this.middleIndex].value === value) {
                     this.setState({ items: items });
                     return true;
@@ -462,7 +464,6 @@ var PickerWheelColumn = function (_Component) {
     }, {
         key: '_updateItemsAndMargin',
         value: function _updateItemsAndMargin(difference) {
-            console.log(difference);
             var items = this.state.items;
 
             if (difference > 0) {
@@ -545,7 +546,9 @@ var PickerWheelColumn = function (_Component) {
                 this.velocity += accelerationRate;
             }
 
-            var additionalIndexesToTravel = [-5, Math.floor(unitsToTravel / this.itemHeight), 5].sort()[1];
+            var additionalIndexesToTravel = [-5, Math.floor(unitsToTravel / this.itemHeight), 5].sort(function (a, b) {
+                return a - b;
+            })[1];
             var virtualCurrentIndex = additionalIndexesToTravel + currentIndex;
 
             console.log({
@@ -574,7 +577,6 @@ var PickerWheelColumn = function (_Component) {
     }, {
         key: 'handleStart',
         value: function handleStart(event) {
-            console.log('START');
             this.touchY = !isUndefined(event.targetTouches) && !isUndefined(event.targetTouches[0]) ? event.targetTouches[0].pageY : event.pageY;
 
             this.translateY = this.state.translateY;
@@ -583,7 +585,6 @@ var PickerWheelColumn = function (_Component) {
     }, {
         key: 'handleMove',
         value: function handleMove(event) {
-            console.log('MOVE');
             var touchY = !isUndefined(event.targetTouches) && !isUndefined(event.targetTouches[0]) ? event.targetTouches[0].pageY : event.pageY;
 
             var dir = touchY - this.touchY;
@@ -594,17 +595,6 @@ var PickerWheelColumn = function (_Component) {
             var now = Date.now();
             var timeDiff = now - this.lastEventTime;
             this.velocity = diff / timeDiff;
-
-            console.log({
-                direction: direction,
-                lastEventTime: this.lastEventTime,
-                now: now,
-                timeDiff: timeDiff,
-                lastTouchY: this.lastTouchY,
-                touchY: touchY,
-                diff: diff,
-                velocity: this.velocity
-            });
 
             this.lastEventTime = Date.now();
             this.lastTouchY = touchY;
@@ -630,7 +620,6 @@ var PickerWheelColumn = function (_Component) {
     }, {
         key: 'handleEnd',
         value: function handleEnd(event) {
-            console.log('END');
             var touchY = event.pageY || event.changedTouches[0].pageY;
             var dir = touchY - this.touchY;
             var direction = dir > 0 ? -1 : 1;
