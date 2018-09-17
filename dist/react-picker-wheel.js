@@ -567,6 +567,22 @@ var PickerWheelColumn = function (_Component) {
             var translateY = this.translateY + dir;
             var direction = dir > 0 ? -1 : 1;
 
+            var diff = this.lastTouchY - touchY;
+            var now = Date.now();
+            var timeDiff = now - this.lastEventTime;
+            this.velocity = diff / timeDiff;
+
+            console.log({
+                direction: direction,
+                lastEventTime: this.lastEventTime,
+                now: now,
+                timeDiff: timeDiff,
+                lastTouchY: this.lastTouchY,
+                touchY: touchY,
+                diff: diff,
+                velocity: this.velocity
+            });
+
             this.lastEventTime = Date.now();
             this.lastTouchY = touchY;
 
@@ -595,23 +611,6 @@ var PickerWheelColumn = function (_Component) {
             var touchY = event.pageY || event.changedTouches[0].pageY;
             var dir = touchY - this.touchY;
             var direction = dir > 0 ? -1 : 1;
-
-            var diff = this.lastTouchY - touchY;
-            var now = Date.now();
-            var timeDiff = now - this.lastEventTime;
-            this.velocity = diff / timeDiff;
-
-            console.log({
-                direction: direction,
-                lastEventTime: this.lastEventTime,
-                now: now,
-                timeDiff: timeDiff,
-                lastTouchY: this.lastTouchY,
-                touchY: touchY,
-                diff: diff,
-                velocity: this.velocity
-            });
-
             this._moveToNext(direction);
         }
 
@@ -845,7 +844,8 @@ var PickerWheel = function (_Component) {
                 confirmText = _props2.confirmText,
                 cancelText = _props2.cancelText,
                 showHeader = _props2.showHeader,
-                customHeader = _props2.customHeader;
+                customHeader = _props2.customHeader,
+                itemHeight = _props2.itemHeight;
 
             var value = this.state.value;
             var themeClassName = ['default', 'dark', 'ios', 'android', 'android-dark', 'assurance'].indexOf(theme) === -1 ? 'default' : theme;
@@ -868,7 +868,9 @@ var PickerWheel = function (_Component) {
                         min: min,
                         max: max,
                         items: items,
-                        onSelect: this.handleItemSelect })
+                        onSelect: this.handleItemSelect,
+                        itemHeight: itemHeight
+                    })
                 ),
                 React__default.createElement(
                     'div',
