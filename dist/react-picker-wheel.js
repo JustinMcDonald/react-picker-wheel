@@ -565,10 +565,10 @@ var PickerWheelColumn = function (_Component) {
 
             // NOTE: There is no transitionend, setTimeout is used instead.
             setTimeout(function () {
+                _this2._updateItemsAndMargin(additionalIndexesToTravel * direction);
                 _this2.animating = false;
                 _this2.props.onSelect(_this2.state.items[_this2.middleIndex].value);
                 _this2._clearTransition(_this2.refs.scroll);
-                //this._updateItemsAndMargin(additionalIndexesToTravel * direction);
             }, fixedAnimationTime);
         }
     }, {
