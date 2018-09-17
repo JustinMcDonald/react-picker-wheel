@@ -371,6 +371,7 @@ var PickerWheelColumn = function (_Component) {
         _this.touchY = 0; // 保存touchstart的pageY
         _this.translateY = 0; // 容器偏移的距离
         _this.lastEventTime = Date.now();
+        _this.lastTouchY = 0;
         _this.velocity = 0;
         _this.moveItemCount = 0; // 一次滑动移动了多少个时间
         _this.itemHeight = props.itemHeight;
@@ -594,7 +595,7 @@ var PickerWheelColumn = function (_Component) {
             var dir = touchY - this.touchY;
             var direction = dir > 0 ? -1 : 1;
 
-            var diff = this.state.touchY - touchY;
+            var diff = this.lastTouchY - touchY;
             var now = Date.now();
             var timeDiff = now - this.lastEventTime;
             this.velocity = diff / timeDiff;
@@ -604,7 +605,7 @@ var PickerWheelColumn = function (_Component) {
                 lastEventTime: this.lastEventTime,
                 now: now,
                 timeDiff: timeDiff,
-                lastTouchY: this.state.touchY,
+                lastTouchY: this.lastTouchY,
                 touchY: touchY,
                 diff: diff,
                 velocity: this.velocity
@@ -677,7 +678,12 @@ var PickerWheelColumn = function (_Component) {
                 'li',
                 {
                     key: index,
-                    className: className },
+                    className: className,
+                    style: {
+                        height: this.itemHeight,
+                        lineHeight: this.itemHeight
+                    }
+                },
                 item.text
             );
         }
@@ -700,10 +706,18 @@ var PickerWheelColumn = function (_Component) {
                         ref: function ref(viewport) {
                             return _this3.viewport = viewport;
                         } // eslint-disable-line
-                        , className: 'picker-wheel-viewport' },
+                        , className: 'picker-wheel-viewport',
+                        style: { height: this.itemHeight * 5 }
+                    },
                     React__default.createElement(
                         'div',
-                        { className: 'picker-wheel-wheel' },
+                        {
+                            className: 'picker-wheel-wheel',
+                            style: {
+                                height: this.itemHeight,
+                                marginTop: -(this.itemHeight / 2)
+                            }
+                        },
                         React__default.createElement(
                             'ul',
                             {
