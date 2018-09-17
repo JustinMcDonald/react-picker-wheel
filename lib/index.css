@@ -107,6 +107,8 @@
     .picker-wheel-scroll {
         list-style-type: none;
         padding: 0;
+        -webkit-margin-before: 0;
+        -webkit-margin-after: 0;
         &>li {
             height: 40px;
             line-height: 40px;
