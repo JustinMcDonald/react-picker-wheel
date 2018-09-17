@@ -411,10 +411,10 @@ var PickerWheelColumn = function (_Component) {
     }, {
         key: 'componentWillReceiveProps',
         value: function componentWillReceiveProps(nextProps) {
-            this._iniItems(nextProps.value);
             if (nextProps.value === this.props.value) {
                 return;
             }
+            this._iniItems(nextProps.value);
             this.currentIndex = this.middleIndex;
             this.setState({
                 translateY: this.middleY,
@@ -448,10 +448,8 @@ var PickerWheelColumn = function (_Component) {
     }, {
         key: '_iniItems',
         value: function _iniItems(value) {
-            console.log(value);
             var items = this.state.items;
             for (var i = 0; i < items.length; i++) {
-                console.log(items[this.middleIndex].value);
                 if (items[this.middleIndex].value === value) {
                     this.setState({ items: items });
                     return true;
