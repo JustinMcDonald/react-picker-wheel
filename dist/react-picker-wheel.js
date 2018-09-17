@@ -473,7 +473,7 @@ var PickerWheelColumn = function (_Component) {
                     marginTop: (this.currentIndex - this.middleIndex) * this.itemHeight + this.itemHeight / 2
                 });
             } else if (difference < 0) {
-                var _shiftedItems = items.slice(items.length + difference, -difference);
+                var _shiftedItems = items.slice(items.length + difference, items.length);
                 this.currentIndex += difference;
                 this.setState({
                     items: _shiftedItems.concat(items.slice(0, items.length + difference)),
