@@ -545,9 +545,8 @@ var PickerWheelColumn = function (_Component) {
                 this.velocity += accelerationRate;
             }
 
-            var maxAdditionalIndexesToTravel = 5;
-            var additionalIndexesToTravel = Math.min(Math.floor(unitsToTravel / this.itemHeight), maxAdditionalIndexesToTravel);
-            var virtualCurrentIndex = additionalIndexesToTravel * direction + currentIndex;
+            var additionalIndexesToTravel = [-5, Math.floor(unitsToTravel / this.itemHeight), 5].sort()[1];
+            var virtualCurrentIndex = additionalIndexesToTravel + currentIndex;
 
             console.log({
                 direction: direction,
@@ -566,7 +565,7 @@ var PickerWheelColumn = function (_Component) {
 
             // NOTE: There is no transitionend, setTimeout is used instead.
             setTimeout(function () {
-                _this2._updateItemsAndMargin(additionalIndexesToTravel * direction);
+                _this2._updateItemsAndMargin(additionalIndexesToTravel);
                 _this2.animating = false;
                 _this2.props.onSelect(_this2.state.items[_this2.middleIndex].value);
                 _this2._clearTransition(_this2.refs.scroll);
