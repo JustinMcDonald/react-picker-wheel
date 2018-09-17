@@ -352,7 +352,6 @@ var toConsumableArray = function (arr) {
 /**
  * @module Date组件
  */
-var ITEM_HEIGHT = 40; // 每个日期的高度
 var isUndefined = function isUndefined(val) {
     return typeof val === 'undefined';
 };
@@ -371,10 +370,13 @@ var PickerWheelColumn = function (_Component) {
         _this.animating = false; // 判断是否在transition过渡动画之中
         _this.touchY = 0; // 保存touchstart的pageY
         _this.translateY = 0; // 容器偏移的距离
+        _this.lastEventTime = Date.now();
+        _this.velocity = 0;
         _this.moveItemCount = 0; // 一次滑动移动了多少个时间
+        _this.itemHeight = props.itemHeight;
 
         _this.middleIndex = Math.floor(props.items.length / 2);
-        _this.middleY = -ITEM_HEIGHT * _this.middleIndex;
+        _this.middleY = -_this.itemHeight * _this.middleIndex;
         _this.currentIndex = _this.middleIndex; // 滑动中当前日期的索引
 
         _this.state = {
@@ -415,7 +417,7 @@ var PickerWheelColumn = function (_Component) {
             this.currentIndex = this.middleIndex;
             this.setState({
                 translateY: this.middleY,
-                marginTop: (this.currentIndex - this.middleIndex) * ITEM_HEIGHT
+                marginTop: (this.currentIndex - this.middleIndex) * this.itemHeight
             });
         }
 
@@ -466,21 +468,21 @@ var PickerWheelColumn = function (_Component) {
                 this.currentIndex++;
                 this.setState({
                     items: [].concat(toConsumableArray(items.slice(1)), [shiftedItem]),
-                    marginTop: (this.currentIndex - this.middleIndex) * ITEM_HEIGHT
+                    marginTop: (this.currentIndex - this.middleIndex) * this.itemHeight
                 });
             } else {
                 var _shiftedItem = items[items.length - 1];
                 this.currentIndex--;
                 this.setState({
                     items: [_shiftedItem].concat(toConsumableArray(items.slice(0, items.length - 1))),
-                    marginTop: (this.currentIndex - this.middleIndex) * ITEM_HEIGHT
+                    marginTop: (this.currentIndex - this.middleIndex) * this.itemHeight
                 });
             }
         }
     }, {
         key: '_checkIsUpdateItems',
         value: function _checkIsUpdateItems(direction, translateY) {
-            return direction === 1 ? this.currentIndex * ITEM_HEIGHT + ITEM_HEIGHT / 2 < -translateY : this.currentIndex * ITEM_HEIGHT - ITEM_HEIGHT / 2 > -translateY;
+            return direction === 1 ? this.currentIndex * this.itemHeight + this.itemHeight / 2 < -translateY : this.currentIndex * this.itemHeight - this.itemHeight / 2 > -translateY;
         }
 
         /**
@@ -535,7 +537,7 @@ var PickerWheelColumn = function (_Component) {
             addPrefixCss(obj, { transition: 'transform .2s ease-out' });
 
             this.setState({
-                translateY: -currentIndex * ITEM_HEIGHT
+                translateY: -currentIndex * this.itemHeight
             });
 
             // NOTE: There is no transitionend, setTimeout is used instead.
@@ -548,6 +550,7 @@ var PickerWheelColumn = function (_Component) {
     }, {
         key: 'handleStart',
         value: function handleStart(event) {
+            console.log('START');
             this.touchY = !isUndefined(event.targetTouches) && !isUndefined(event.targetTouches[0]) ? event.targetTouches[0].pageY : event.pageY;
 
             this.translateY = this.state.translateY;
@@ -556,11 +559,14 @@ var PickerWheelColumn = function (_Component) {
     }, {
         key: 'handleMove',
         value: function handleMove(event) {
+            console.log('MOVE');
             var touchY = !isUndefined(event.targetTouches) && !isUndefined(event.targetTouches[0]) ? event.targetTouches[0].pageY : event.pageY;
 
             var dir = touchY - this.touchY;
             var translateY = this.translateY + dir;
             var direction = dir > 0 ? -1 : 1;
+
+            this.lastEventTime = Date.now();
 
             // 日期最小值，最大值限制
             var value = this.state.items[this.middleIndex].value;
@@ -583,9 +589,27 @@ var PickerWheelColumn = function (_Component) {
     }, {
         key: 'handleEnd',
         value: function handleEnd(event) {
+            console.log('END');
             var touchY = event.pageY || event.changedTouches[0].pageY;
             var dir = touchY - this.touchY;
             var direction = dir > 0 ? -1 : 1;
+
+            var diff = this.state.touchY - touchY;
+            var now = Date.now();
+            var timeDiff = now - this.lastEventTime;
+            this.velocity = diff / timeDiff;
+
+            console.log({
+                direction: direction,
+                lastEventTime: this.lastEventTime,
+                now: now,
+                timeDiff: timeDiff,
+                lastTouchY: this.state.touchY,
+                touchY: touchY,
+                diff: diff,
+                velocity: this.velocity
+            });
+
             this._moveToNext(direction);
         }
 
@@ -951,7 +975,8 @@ ModalPickerWheel.defaultProps = {
     confirmText: '完成',
     cancelText: '取消',
     onSelect: function onSelect() {},
-    onCancel: function onCancel() {}
+    onCancel: function onCancel() {},
+    itemHeight: 40
 };
 
 return ModalPickerWheel;
