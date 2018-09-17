@@ -568,6 +568,7 @@ var PickerWheelColumn = function (_Component) {
             var direction = dir > 0 ? -1 : 1;
 
             this.lastEventTime = Date.now();
+            this.lastTouchY = touchY;
 
             // 日期最小值，最大值限制
             var value = this.state.items[this.middleIndex].value;
