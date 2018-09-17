@@ -536,7 +536,7 @@ var PickerWheelColumn = function (_Component) {
 
             this.animating = true;
 
-            var fixedAnimationTime = 200;
+            var fixedAnimationTime = 400;
             var accelerationRate = -(this.velocity / fixedAnimationTime); // units per ms for decelleration
 
             var unitsToTravel = 0;
@@ -545,7 +545,8 @@ var PickerWheelColumn = function (_Component) {
                 this.velocity += accelerationRate;
             }
 
-            var additionalIndexesToTravel = Math.floor(unitsToTravel / this.itemHeight);
+            var maxAdditionalIndexesToTravel = 5;
+            var additionalIndexesToTravel = Math.min(Math.floor(unitsToTravel / this.itemHeight), maxAdditionalIndexesToTravel);
             var virtualCurrentIndex = additionalIndexesToTravel * direction + currentIndex;
 
             console.log({
