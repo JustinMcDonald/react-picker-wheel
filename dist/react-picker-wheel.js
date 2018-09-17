@@ -381,7 +381,7 @@ var PickerWheelColumn = function (_Component) {
 
         _this.state = {
             translateY: _this.middleY,
-            marginTop: (_this.currentIndex - _this.middleIndex) * ITEM_HEIGHT,
+            marginTop: (_this.currentIndex - _this.middleIndex) * _this.itemHeight,
             items: props.items
         };
 
