@@ -468,14 +468,14 @@ var PickerWheelColumn = function (_Component) {
                 var shiftedItems = items.slice(0, difference);
                 this.currentIndex += difference;
                 this.setState({
-                    items: [].concat(toConsumableArray(items.slice(difference)), [shiftedItems]),
+                    items: items.slice(difference).concat(shiftedItems),
                     marginTop: (this.currentIndex - this.middleIndex) * this.itemHeight + this.itemHeight / 2
                 });
             } else if (difference < 0) {
                 var _shiftedItems = items.slice(items.length + difference, -difference);
                 this.currentIndex += difference;
                 this.setState({
-                    items: [_shiftedItems].concat(toConsumableArray(items.slice(0, items.length + difference))),
+                    items: _shiftedItems.concat(items.slice(0, items.length + difference)),
                     marginTop: (this.currentIndex - this.middleIndex) * this.itemHeight + this.itemHeight / 2
                 });
             }
@@ -546,6 +546,15 @@ var PickerWheelColumn = function (_Component) {
 
             var additionalIndexesToTravel = Math.floor(unitsToTravel / this.itemHeight);
             var virtualCurrentIndex = additionalIndexesToTravel * direction + currentIndex;
+
+            console.log({
+                direction: direction,
+                velocity: this.velocity,
+                accelerationRate: accelerationRate,
+                unitsToTravel: unitsToTravel,
+                additionalIndexesToTravel: additionalIndexesToTravel,
+                virtualCurrentIndex: virtualCurrentIndex
+            });
 
             addPrefixCss(obj, { transition: 'transform ' + fixedAnimationTime + 'ms ease-out' });
 
