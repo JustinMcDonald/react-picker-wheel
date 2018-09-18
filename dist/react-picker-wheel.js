@@ -555,7 +555,19 @@ var PickerWheelColumn = function (_Component) {
 
             var virtualCurrentIndex = additionalIndexesToTravel + currentIndex;
 
-            addPrefixCss(obj, { transition: 'transform ' + FIXED_SPIN_ANIMATION_TIME + 'ms ease-out' });
+            // heuristic to speed up animations for small velocities
+            var animationTime = function (indexes) {
+                switch (Math.abs(indexes)) {
+                    case 0:
+                        return 30;
+                    case 1:
+                        return 100;
+                    default:
+                        return FIXED_SPIN_ANIMATION_TIME;
+                }
+            }(additionalIndexesToTravel);
+
+            addPrefixCss(obj, { transition: 'transform ' + animationTime + 'ms ease-out' });
 
             this.setState({
                 translateY: -virtualCurrentIndex * this.itemHeight
@@ -567,7 +579,7 @@ var PickerWheelColumn = function (_Component) {
                 _this2.animating = false;
                 _this2.props.onSelect(_this2.state.items[_this2.middleIndex].value);
                 _this2._clearTransition(_this2.refs.scroll);
-            }, FIXED_SPIN_ANIMATION_TIME);
+            }, animationTime);
         }
     }, {
         key: 'handleStart',
