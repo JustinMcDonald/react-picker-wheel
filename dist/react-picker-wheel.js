@@ -561,7 +561,7 @@ var PickerWheelColumn = function (_Component) {
             var virtualCurrentIndex = additionalIndexesToTravel + currentIndex;
 
             var animationTime = this.itemHeight / this.velocity;
-            this.velocity += this.accelerationRate;
+            this.velocity += this.accelerationRate * animationTime;
 
             addPrefixCss(obj, { transition: 'transform ' + animationTime + 'ms ease-out' });
 
@@ -578,7 +578,7 @@ var PickerWheelColumn = function (_Component) {
 
             this.spinTimeout = setTimeout(function () {
                 _this2._updateItemsAndMargin(additionalIndexesToTravel);
-                if (_this2.velocity <= 0 && direction >= 0 || _this2.velocity >= 0 && direction <= 0) {
+                if (_this2.velocity <= 0 && direction <= 0 || _this2.velocity >= 0 && direction >= 0) {
                     _this2.props.onSelect(_this2.state.items[_this2.middleIndex].value);
                     _this2._clearTransition(_this2.refs.scroll);
                 } else {
