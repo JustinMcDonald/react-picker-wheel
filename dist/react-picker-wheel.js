@@ -355,7 +355,8 @@ var toConsumableArray = function (arr) {
 var isUndefined = function isUndefined(val) {
     return typeof val === 'undefined';
 };
-var MAX_SPIN_TIME = 5000;
+var FIXED_SPIN_ANIMATION_TIME = 10;
+var MAX_SPIN_TIME = 3000;
 
 /**
  * Class Date组件类
@@ -503,7 +504,7 @@ var PickerWheelColumn = function (_Component) {
         value: function _clearTransition(obj) {
             this.animating = false;
             addPrefixCss(obj, { transition: '' });
-            if (this.spinTimeout) clearTimeout(this.spinTimeout);
+            if (this.spinTimeout !== null) clearTimeout(this.spinTimeout);
         }
 
         /**
@@ -543,13 +544,10 @@ var PickerWheelColumn = function (_Component) {
 
             this.animating = true;
 
+            var unitsToTravel = FIXED_SPIN_ANIMATION_TIME * this.velocity;
+
             /*
-            let unitsToTravel = 0;
-            for (var i = 0; i < FIXED_SPIN_ANIMATION_TIME; i++) {
-                unitsToTravel += this.velocity;
-                this.velocity += accelerationRate;
-            }
-             const absoluteUnitsToTravel = Math.abs(unitsToTravel);
+            const absoluteUnitsToTravel = Math.abs(unitsToTravel);
              const additionalIndexesToTravel = [
                 -this.maxItemSpinCount,
                 Math.floor(absoluteUnitsToTravel / this.itemHeight) * direction,
@@ -560,24 +558,26 @@ var PickerWheelColumn = function (_Component) {
             var additionalIndexesToTravel = direction;
             var virtualCurrentIndex = additionalIndexesToTravel + currentIndex;
 
-            var animationTime = this.itemHeight / this.velocity;
-            this.velocity += this.accelerationRate * animationTime;
+            this.velocity += this.accelerationRate * FIXED_SPIN_ANIMATION_TIME;
 
-            addPrefixCss(obj, { transition: 'transform ' + animationTime + 'ms ease-out' });
+            addPrefixCss(obj, { transition: 'transform ' + FIXED_SPIN_ANIMATION_TIME + 'ms ease-out' });
 
             this.setState({
-                translateY: -virtualCurrentIndex * this.itemHeight
+                translateY: -virtualCurrentIndex * this.itemHeight + unitsToTravel
             });
 
             console.log({
                 direction: direction,
                 velocity: this.velocity,
                 accelerationRate: this.accelerationRate,
-                virtualCurrentIndex: virtualCurrentIndex
+                virtualCurrentIndex: virtualCurrentIndex,
+                currentIndex: this.currentIndex
             });
 
             this.spinTimeout = setTimeout(function () {
-                _this2._updateItemsAndMargin(additionalIndexesToTravel);
+                if (_this2.state.translateY / _this2.itemHeight !== _this2.currentIndex) {
+                    _this2._updateItemsAndMargin(_this2.currentIndex - _this2.state.translateY / _this2.itemHeight);
+                }
                 if (_this2.velocity <= 0 && direction >= 0 || _this2.velocity >= 0 && direction <= 0 || _this2.accelerationRate * direction >= 0) {
                     // in case we are increasing accelerating
                     _this2.props.onSelect(_this2.state.items[_this2.middleIndex].value);
@@ -585,7 +585,7 @@ var PickerWheelColumn = function (_Component) {
                 } else {
                     _this2._moveTo(obj, virtualCurrentIndex, direction);
                 }
-            }, animationTime);
+            }, FIXED_SPIN_ANIMATION_TIME);
         }
     }, {
         key: 'handleStart',
