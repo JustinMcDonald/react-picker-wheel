@@ -578,7 +578,8 @@ var PickerWheelColumn = function (_Component) {
 
             this.spinTimeout = setTimeout(function () {
                 _this2._updateItemsAndMargin(additionalIndexesToTravel);
-                if (_this2.velocity <= 0 && direction <= 0 || _this2.velocity >= 0 && direction >= 0) {
+                if (_this2.velocity <= 0 && direction >= 0 || _this2.velocity >= 0 && direction <= 0 || _this2.accelerationRate * direction >= 0) {
+                    // in case we are increasing accelerating
                     _this2.props.onSelect(_this2.state.items[_this2.middleIndex].value);
                     _this2._clearTransition(_this2.refs.scroll);
                 } else {
