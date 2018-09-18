@@ -559,7 +559,7 @@ var PickerWheelColumn = function (_Component) {
             if (this.estimatedAccelerationRate !== this.accelerationRate) {
                 var numberOfAccelerationEvents = MAX_SPIN_TIME / FIXED_SPIN_ANIMATION_TIME;
                 var estimatedDistTravelled = this.velocity * numberOfAccelerationEvents + 0.5 * this.estimatedAccelerationRate * Math.pow(numberOfAccelerationEvents, 2);
-                var targetDistTravelled = estimatedDistTravelled - estimatedDistTravelled % this.itemHeight;
+                var targetDistTravelled = estimatedDistTravelled - estimatedDistTravelled % this.itemHeight + this.itemHeight;
                 var predictedAccelerationRate = (targetDistTravelled - this.velocity * numberOfAccelerationEvents) * 2 / Math.pow(numberOfAccelerationEvents, 2);
                 console.log({
                     velocity: this.velocity,
