@@ -575,8 +575,9 @@ var PickerWheelColumn = function (_Component) {
             });
 
             this.spinTimeout = setTimeout(function () {
-                if (Math.floor(_this2.state.translateY / _this2.itemHeight) !== _this2.currentIndex) {
-                    _this2._updateItemsAndMargin(_this2.currentIndex - Math.floor(_this2.state.translateY / _this2.itemHeight));
+                var closestAnimatedIndex = -Math.floor(_this2.state.translateY / _this2.itemHeight);
+                if (closestAnimatedIndex !== _this2.currentIndex) {
+                    _this2._updateItemsAndMargin(_this2.currentIndex - closestAnimatedIndex);
                 }
                 if (_this2.velocity <= 0 && direction >= 0 || _this2.velocity >= 0 && direction <= 0 || _this2.accelerationRate * direction >= 0) {
                     // in case we are increasing accelerating
