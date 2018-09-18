@@ -569,9 +569,16 @@ var PickerWheelColumn = function (_Component) {
                 translateY: -virtualCurrentIndex * this.itemHeight
             });
 
+            console.log({
+                direction: direction,
+                velocity: this.velocity,
+                accelerationRate: this.accelerationRate,
+                virtualCurrentIndex: virtualCurrentIndex
+            });
+
             this.spinTimeout = setTimeout(function () {
                 _this2._updateItemsAndMargin(additionalIndexesToTravel);
-                if (_this2.velocity <= 0) {
+                if (_this2.velocity <= 0 && direction >= 0 || _this2.velocity >= 0 && direction <= 0) {
                     _this2.props.onSelect(_this2.state.items[_this2.middleIndex].value);
                     _this2._clearTransition(_this2.refs.scroll);
                 } else {
