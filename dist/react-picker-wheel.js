@@ -560,7 +560,7 @@ var PickerWheelColumn = function (_Component) {
                 var estimatedDistTravelled = this.velocity * MAX_SPIN_TIME + 0.5 * this.estimatedAccelerationRate * Math.pow(MAX_SPIN_TIME, 2);
                 var targetDistTravelled = estimatedDistTravelled - estimatedDistTravelled % this.itemHeight;
                 this.accelerationRate = (targetDistTravelled - this.velocity * MAX_SPIN_TIME) * 2 / Math.pow(MAX_SPIN_TIME, 2);
-                this.estimatedDistTravelled = this.accelerationRate;
+                this.estimatedAccelerationRate = this.accelerationRate;
             }
 
             var additionalIndexesToTravel = direction;
