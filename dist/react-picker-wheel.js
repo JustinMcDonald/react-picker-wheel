@@ -356,6 +356,7 @@ var isUndefined = function isUndefined(val) {
     return typeof val === 'undefined';
 };
 var MAX_ITEM_SPIN_COUNT = 7;
+var FIXED_SPIN_ANIMATION_TIME = 400;
 
 /**
  * Class Date组件类
@@ -537,11 +538,10 @@ var PickerWheelColumn = function (_Component) {
 
             this.animating = true;
 
-            var fixedAnimationTime = 400;
-            var accelerationRate = -(this.velocity / fixedAnimationTime); // units per ms for decelleration
+            var accelerationRate = -(this.velocity / FIXED_SPIN_ANIMATION_TIME); // units per ms for decelleration
 
             var unitsToTravel = 0;
-            for (var i = 0; i < 200; i++) {
+            for (var i = 0; i < FIXED_SPIN_ANIMATION_TIME; i++) {
                 unitsToTravel += this.velocity;
                 this.velocity += accelerationRate;
             }
@@ -551,9 +551,10 @@ var PickerWheelColumn = function (_Component) {
             var additionalIndexesToTravel = [-MAX_ITEM_SPIN_COUNT, Math.floor(absoluteUnitsToTravel / this.itemHeight) * direction, MAX_ITEM_SPIN_COUNT].sort(function (a, b) {
                 return a - b;
             })[1];
+
             var virtualCurrentIndex = additionalIndexesToTravel + currentIndex;
 
-            addPrefixCss(obj, { transition: 'transform ' + fixedAnimationTime + 'ms ease-out' });
+            addPrefixCss(obj, { transition: 'transform ' + FIXED_SPIN_ANIMATION_TIME + 'ms ease-out' });
 
             this.setState({
                 translateY: -virtualCurrentIndex * this.itemHeight
@@ -565,7 +566,7 @@ var PickerWheelColumn = function (_Component) {
                 _this2.animating = false;
                 _this2.props.onSelect(_this2.state.items[_this2.middleIndex].value);
                 _this2._clearTransition(_this2.refs.scroll);
-            }, fixedAnimationTime);
+            }, FIXED_SPIN_ANIMATION_TIME);
         }
     }, {
         key: 'handleStart',
