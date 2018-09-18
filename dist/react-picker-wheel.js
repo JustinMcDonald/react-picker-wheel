@@ -558,17 +558,18 @@ var PickerWheelColumn = function (_Component) {
 
             if (this.estimatedAccelerationRate !== this.accelerationRate) {
                 var numberOfAccelerationEvents = MAX_SPIN_TIME / FIXED_SPIN_ANIMATION_TIME;
-                var estimatedDistTravelled = this.velocity * numberOfAccelerationEvents + 0.5 * this.estimatedAccelerationRate * Math.pow(numberOfAccelerationEvents, 2);
-                var totalEstimatedDistTravelled = estimatedDistTravelled * FIXED_SPIN_ANIMATION_TIME;
+                var estimatedDistTravelled = this.velocity * FIXED_SPIN_ANIMATION_TIME * numberOfAccelerationEvents + 0.5 * (this.estimatedAccelerationRate * FIXED_SPIN_ANIMATION_TIME) * Math.pow(numberOfAccelerationEvents, 2);
+                //const totalEstimatedDistTravelled = estimatedDistTravelled * FIXED_SPIN_ANIMATION_TIME;
                 var totalTargetDistTravelled = totalEstimatedDistTravelled - totalEstimatedDistTravelled % this.itemHeight;
-                var targetDistTravelled = totalTargetDistTravelled / FIXED_SPIN_ANIMATION_TIME;
-                var predictedAccelerationRate = (targetDistTravelled - this.velocity * numberOfAccelerationEvents) * 2 / Math.pow(numberOfAccelerationEvents, 2);
+                //const targetDistTravelled = totalTargetDistTravelled / FIXED_SPIN_ANIMATION_TIME;
+                var predictedAccelerationRate = (totalEstimatedDistTravelled - this.velocity * FIXED_SPIN_ANIMATION_TIME * numberOfAccelerationEvents) * 2 / (Math.pow(numberOfAccelerationEvents, 2) * FIXED_SPIN_ANIMATION_TIME);
                 console.log({
+                    velocity: this.velocity,
                     estimatedAccelerationRate: this.estimatedAccelerationRate,
                     numberOfAccelerationEvents: numberOfAccelerationEvents,
                     estimatedDistTravelled: estimatedDistTravelled,
-                    totalEstimatedDistTravelled: totalEstimatedDistTravelled,
-                    targetDistTravelled: targetDistTravelled,
+                    //totalEstimatedDistTravelled: totalEstimatedDistTravelled,
+                    //targetDistTravelled: targetDistTravelled,
                     totalTargetDistTravelled: totalTargetDistTravelled,
                     predictedAccelerationRate: predictedAccelerationRate
                 });
@@ -579,6 +580,7 @@ var PickerWheelColumn = function (_Component) {
             var additionalIndexesToTravel = direction;
             var virtualCurrentIndex = additionalIndexesToTravel + currentIndex;
 
+            // todo simplify accel prediction and make this more accurate
             this.velocity += this.accelerationRate * FIXED_SPIN_ANIMATION_TIME;
 
             addPrefixCss(obj, { transition: 'transform ' + FIXED_SPIN_ANIMATION_TIME + 'ms ease-out' });
@@ -603,7 +605,7 @@ var PickerWheelColumn = function (_Component) {
                 if (_this2.velocity <= 0 && direction >= 0 || _this2.velocity >= 0 && direction <= 0 || _this2.accelerationRate * direction >= 0 || // in case we are increasing accelerating
                 !_this2.animating) {
                     // make sure we are still animating
-                    _this2._updateItemsAndMargin(closestAnimatedIndex - _this2.currentIndex);
+                    _this2.setState({ translateY: -_this2.currentIndex * _this2.itemHeight });
                     _this2.props.onSelect(_this2.state.items[_this2.middleIndex].value);
                     _this2._clearTransition(_this2.refs.scroll);
                 } else {
