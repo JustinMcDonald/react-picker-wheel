@@ -553,15 +553,6 @@ var PickerWheelColumn = function (_Component) {
             })[1];
             var virtualCurrentIndex = additionalIndexesToTravel + currentIndex;
 
-            console.log({
-                direction: direction,
-                velocity: this.velocity,
-                accelerationRate: accelerationRate,
-                unitsToTravel: unitsToTravel,
-                additionalIndexesToTravel: additionalIndexesToTravel,
-                virtualCurrentIndex: virtualCurrentIndex
-            });
-
             addPrefixCss(obj, { transition: 'transform ' + fixedAnimationTime + 'ms ease-out' });
 
             this.setState({
