@@ -382,7 +382,7 @@ var PickerWheelColumn = function (_Component) {
 
         _this.state = {
             translateY: _this.middleY,
-            marginTop: (_this.currentIndex - _this.middleIndex) * _this.itemHeight + _this.itemHeight / 2,
+            marginTop: (_this.currentIndex - _this.middleIndex) * _this.itemHeight,
             items: props.items
         };
 
@@ -418,7 +418,7 @@ var PickerWheelColumn = function (_Component) {
             this.currentIndex = this.middleIndex;
             this.setState({
                 translateY: this.middleY,
-                marginTop: (this.currentIndex - this.middleIndex) * this.itemHeight + this.itemHeight / 2
+                marginTop: (this.currentIndex - this.middleIndex) * this.itemHeight
             });
         }
 
@@ -469,14 +469,14 @@ var PickerWheelColumn = function (_Component) {
                 this.currentIndex += difference;
                 this.setState({
                     items: items.slice(difference).concat(shiftedItems),
-                    marginTop: (this.currentIndex - this.middleIndex) * this.itemHeight + this.itemHeight / 2
+                    marginTop: (this.currentIndex - this.middleIndex) * this.itemHeight
                 });
             } else if (difference < 0) {
                 var _shiftedItems = items.slice(items.length + difference, items.length);
                 this.currentIndex += difference;
                 this.setState({
                     items: _shiftedItems.concat(items.slice(0, items.length + difference)),
-                    marginTop: (this.currentIndex - this.middleIndex) * this.itemHeight + this.itemHeight / 2
+                    marginTop: (this.currentIndex - this.middleIndex) * this.itemHeight
                 });
             }
         }
@@ -691,7 +691,7 @@ var PickerWheelColumn = function (_Component) {
                     className: className,
                     style: {
                         height: this.itemHeight,
-                        lineHeight: this.itemHeight
+                        lineHeight: this.itemHeight + 'px'
                     }
                 },
                 item.text
