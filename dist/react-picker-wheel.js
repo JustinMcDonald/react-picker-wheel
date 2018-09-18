@@ -575,15 +575,19 @@ var PickerWheelColumn = function (_Component) {
             });
 
             this.spinTimeout = setTimeout(function () {
-                var closestAnimatedIndex = -Math.floor(_this2.state.translateY / _this2.itemHeight);
+                var closestAnimatedIndex = -Math.round(_this2.state.translateY / _this2.itemHeight);
+                console.log(closestAnimatedIndex);
                 if (closestAnimatedIndex !== _this2.currentIndex) {
+                    console.log('updating items');
                     _this2._updateItemsAndMargin(_this2.currentIndex - closestAnimatedIndex);
                 }
                 if (_this2.velocity <= 0 && direction >= 0 || _this2.velocity >= 0 && direction <= 0 || _this2.accelerationRate * direction >= 0) {
                     // in case we are increasing accelerating
+                    console.log('velocity reached 0');
                     _this2.props.onSelect(_this2.state.items[_this2.middleIndex].value);
                     _this2._clearTransition(_this2.refs.scroll);
                 } else {
+                    console.log('velocity NOT 0, moving again');
                     _this2._moveTo(obj, virtualCurrentIndex, direction);
                 }
             }, FIXED_SPIN_ANIMATION_TIME);
