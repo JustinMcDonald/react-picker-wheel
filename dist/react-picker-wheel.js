@@ -355,7 +355,7 @@ var toConsumableArray = function (arr) {
 var isUndefined = function isUndefined(val) {
     return typeof val === 'undefined';
 };
-var FIXED_SPIN_ANIMATION_TIME = 200;
+var MAX_SPIN_TIME = 5000;
 
 /**
  * Class Date组件类
@@ -377,6 +377,8 @@ var PickerWheelColumn = function (_Component) {
         _this.velocity = 0;
         _this.moveItemCount = 0; // 一次滑动移动了多少个时间
         _this.itemHeight = props.itemHeight;
+        _this.spinTimeout = null;
+        _this.accelerationRate = 0;
 
         _this.middleIndex = Math.floor(props.items.length / 2);
         _this.middleY = -_this.itemHeight * _this.middleIndex;
@@ -499,7 +501,9 @@ var PickerWheelColumn = function (_Component) {
     }, {
         key: '_clearTransition',
         value: function _clearTransition(obj) {
+            this.animating = false;
             addPrefixCss(obj, { transition: '' });
+            if (this.spinTimeout) clearTimeout(this.spinTimeout);
         }
 
         /**
@@ -539,33 +543,25 @@ var PickerWheelColumn = function (_Component) {
 
             this.animating = true;
 
-            var accelerationRate = -(this.velocity / FIXED_SPIN_ANIMATION_TIME); // units per ms for decelleration
-
-            var unitsToTravel = 0;
+            /*
+            let unitsToTravel = 0;
             for (var i = 0; i < FIXED_SPIN_ANIMATION_TIME; i++) {
                 unitsToTravel += this.velocity;
                 this.velocity += accelerationRate;
             }
+             const absoluteUnitsToTravel = Math.abs(unitsToTravel);
+             const additionalIndexesToTravel = [
+                -this.maxItemSpinCount,
+                Math.floor(absoluteUnitsToTravel / this.itemHeight) * direction,
+                this.maxItemSpinCount
+            ].sort(function(a, b){ return a - b; })[1];
+            */
 
-            var absoluteUnitsToTravel = Math.abs(unitsToTravel);
-
-            var additionalIndexesToTravel = [-this.maxItemSpinCount, Math.floor(absoluteUnitsToTravel / this.itemHeight) * direction, this.maxItemSpinCount].sort(function (a, b) {
-                return a - b;
-            })[1];
-
+            var additionalIndexesToTravel = direction;
             var virtualCurrentIndex = additionalIndexesToTravel + currentIndex;
 
-            // heuristic to speed up animations for small velocities
-            var animationTime = function (indexes) {
-                switch (Math.abs(indexes)) {
-                    case 0:
-                        return 30;
-                    case 1:
-                        return 100;
-                    default:
-                        return FIXED_SPIN_ANIMATION_TIME;
-                }
-            }(additionalIndexesToTravel);
+            var animationTime = this.itemHeight / this.velocity;
+            this.velocity += this.accelerationRate;
 
             addPrefixCss(obj, { transition: 'transform ' + animationTime + 'ms ease-out' });
 
@@ -573,18 +569,22 @@ var PickerWheelColumn = function (_Component) {
                 translateY: -virtualCurrentIndex * this.itemHeight
             });
 
-            // NOTE: There is no transitionend, setTimeout is used instead.
-            setTimeout(function () {
+            this.spinTimeout = setTimeout(function () {
                 _this2._updateItemsAndMargin(additionalIndexesToTravel);
-                _this2.animating = false;
-                _this2.props.onSelect(_this2.state.items[_this2.middleIndex].value);
-                _this2._clearTransition(_this2.refs.scroll);
+                if (_this2.velocity <= 0) {
+                    _this2.props.onSelect(_this2.state.items[_this2.middleIndex].value);
+                    _this2._clearTransition(_this2.refs.scroll);
+                } else {
+                    _this2._moveTo(obj, virtualCurrentIndex, direction);
+                }
             }, animationTime);
         }
     }, {
         key: 'handleStart',
         value: function handleStart(event) {
             this.touchY = !isUndefined(event.targetTouches) && !isUndefined(event.targetTouches[0]) ? event.targetTouches[0].pageY : event.pageY;
+
+            this._clearTransition(this.refs.scroll);
 
             this.translateY = this.state.translateY;
             this.moveItemCount = 0;
@@ -602,6 +602,8 @@ var PickerWheelColumn = function (_Component) {
             var now = Date.now();
             var timeDiff = now - this.lastEventTime;
             this.velocity = diff / timeDiff;
+
+            this.accelerationRate = -(this.velocity / MAX_SPIN_TIME); // units per ms for decelleration
 
             this.lastEventTime = Date.now();
             this.lastTouchY = touchY;
