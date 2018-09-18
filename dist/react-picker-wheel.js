@@ -558,10 +558,20 @@ var PickerWheelColumn = function (_Component) {
 
             if (this.estimatedAccelerationRate !== this.accelerationRate) {
                 var numberOfAccelerationEvents = MAX_SPIN_TIME / FIXED_SPIN_ANIMATION_TIME;
-                var estimatedDistTravelled = (this.velocity * numberOfAccelerationEvents + 0.5 * this.estimatedAccelerationRate * Math.pow(numberOfAccelerationEvents, 2)) * FIXED_SPIN_ANIMATION_TIME;
-                var targetDistTravelled = estimatedDistTravelled - estimatedDistTravelled % this.itemHeight;
-                this.accelerationRate = (targetDistTravelled / FIXED_SPIN_ANIMATION_TIME - this.velocity * numberOfAccelerationEvents) * 2 / Math.pow(numberOfAccelerationEvents, 2);
-                this.estimatedAccelerationRate = this.accelerationRate;
+                var estimatedDistTravelled = this.velocity * numberOfAccelerationEvents + 0.5 * this.estimatedAccelerationRate * Math.pow(numberOfAccelerationEvents, 2);
+                var totalEstimatedDistTravelled = estimatedDistTravelled * FIXED_SPIN_ANIMATION_TIME;
+                var targetDistTravelled = totalEstimatedDistTravelled - totalEstimatedDistTravelled % this.itemHeight;
+                var predictedAccelerationRate = (targetDistTravelled - this.velocity * numberOfAccelerationEvents) * 2 / Math.pow(numberOfAccelerationEvents, 2);
+                console.log({
+                    estimatedAccelerationRate: this.estimatedAccelerationRate,
+                    numberOfAccelerationEvents: numberOfAccelerationEvents,
+                    estimatedDistTravelled: estimatedDistTravelled,
+                    totalEstimatedDistTravelled: totalEstimatedDistTravelled,
+                    targetDistTravelled: targetDistTravelled,
+                    predictedAccelerationRate: predictedAccelerationRate
+                });
+                this.accelerationRate = predictedAccelerationRate;
+                this.estimatedAccelerationRate = predictedAccelerationRate;
             }
 
             var additionalIndexesToTravel = direction;
