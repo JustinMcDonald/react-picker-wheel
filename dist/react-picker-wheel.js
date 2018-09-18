@@ -579,7 +579,7 @@ var PickerWheelColumn = function (_Component) {
                 console.log(closestAnimatedIndex);
                 if (closestAnimatedIndex !== _this2.currentIndex) {
                     console.log('updating items');
-                    _this2._updateItemsAndMargin(_this2.currentIndex - closestAnimatedIndex);
+                    _this2._updateItemsAndMargin(closestAnimatedIndex - _this2.currentIndex);
                 }
                 if (_this2.velocity <= 0 && direction >= 0 || _this2.velocity >= 0 && direction <= 0 || _this2.accelerationRate * direction >= 0) {
                     // in case we are increasing accelerating
