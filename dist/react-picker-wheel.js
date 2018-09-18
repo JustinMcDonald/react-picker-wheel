@@ -355,8 +355,7 @@ var toConsumableArray = function (arr) {
 var isUndefined = function isUndefined(val) {
     return typeof val === 'undefined';
 };
-var MAX_ITEM_SPIN_COUNT = 7;
-var FIXED_SPIN_ANIMATION_TIME = 400;
+var FIXED_SPIN_ANIMATION_TIME = 200;
 
 /**
  * Class Date组件类
@@ -382,6 +381,8 @@ var PickerWheelColumn = function (_Component) {
         _this.middleIndex = Math.floor(props.items.length / 2);
         _this.middleY = -_this.itemHeight * _this.middleIndex;
         _this.currentIndex = _this.middleIndex; // 滑动中当前日期的索引
+
+        _this.maxItemSpinCount = Math.min(props.items.length / 2, 7);
 
         _this.state = {
             translateY: _this.middleY,
@@ -548,7 +549,7 @@ var PickerWheelColumn = function (_Component) {
 
             var absoluteUnitsToTravel = Math.abs(unitsToTravel);
 
-            var additionalIndexesToTravel = [-MAX_ITEM_SPIN_COUNT, Math.floor(absoluteUnitsToTravel / this.itemHeight) * direction, MAX_ITEM_SPIN_COUNT].sort(function (a, b) {
+            var additionalIndexesToTravel = [-this.maxItemSpinCount, Math.floor(absoluteUnitsToTravel / this.itemHeight) * direction, this.maxItemSpinCount].sort(function (a, b) {
                 return a - b;
             })[1];
 
