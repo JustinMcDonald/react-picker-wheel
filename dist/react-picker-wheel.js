@@ -355,6 +355,8 @@ var toConsumableArray = function (arr) {
 var isUndefined = function isUndefined(val) {
     return typeof val === 'undefined';
 };
+var MAX_ITEM_SPIN_COUNT = 7;
+
 /**
  * Class Date组件类
  * @extends Component
@@ -544,7 +546,9 @@ var PickerWheelColumn = function (_Component) {
                 this.velocity += accelerationRate;
             }
 
-            var additionalIndexesToTravel = [-5, Math.floor(unitsToTravel / this.itemHeight), 5].sort(function (a, b) {
+            var absoluteUnitsToTravel = Math.abs(unitsToTravel);
+
+            var additionalIndexesToTravel = [-MAX_ITEM_SPIN_COUNT, Math.floor(absoluteUnitsToTravel / this.itemHeight) * direction, MAX_ITEM_SPIN_COUNT].sort(function (a, b) {
                 return a - b;
             })[1];
             var virtualCurrentIndex = additionalIndexesToTravel + currentIndex;
