@@ -380,6 +380,7 @@ var PickerWheelColumn = function (_Component) {
         _this.itemHeight = props.itemHeight;
         _this.spinTimeout = null;
         _this.accelerationRate = 0;
+        _this.estimatedAccelerationRate = 0;
 
         _this.middleIndex = Math.floor(props.items.length / 2);
         _this.middleY = -_this.itemHeight * _this.middleIndex;
@@ -504,7 +505,7 @@ var PickerWheelColumn = function (_Component) {
         value: function _clearTransition(obj) {
             this.animating = false;
             addPrefixCss(obj, { transition: '' });
-            if (this.spinTimeout !== null) clearTimeout(this.spinTimeout);
+            clearTimeout(this.spinTimeout);
         }
 
         /**
@@ -555,6 +556,13 @@ var PickerWheelColumn = function (_Component) {
             ].sort(function(a, b){ return a - b; })[1];
             */
 
+            if (this.estimatedAccelerationRate !== this.accelerationRate) {
+                var estimatedDistTravelled = this.velocity * MAX_SPIN_TIME + 0.5 * this.estimatedAccelerationRate * Math.pow(MAX_SPIN_TIME, 2);
+                var targetDistTravelled = estimatedDistTravelled - estimatedDistTravelled % this.itemHeight;
+                this.accelerationRate = (targetDistTravelled - this.velocity * MAX_SPIN_TIME) * 2 / Math.pow(MAX_SPIN_TIME, 2);
+                this.estimatedDistTravelled = this.accelerationRate;
+            }
+
             var additionalIndexesToTravel = direction;
             var virtualCurrentIndex = additionalIndexesToTravel + currentIndex;
 
@@ -562,8 +570,8 @@ var PickerWheelColumn = function (_Component) {
 
             addPrefixCss(obj, { transition: 'transform ' + FIXED_SPIN_ANIMATION_TIME + 'ms ease-out' });
 
-            this.setState({
-                translateY: this.state.translateY + unitsToTravel
+            this.setState(function (state, props) {
+                return { translateY: state.translateY - unitsToTravel };
             });
 
             console.log({
@@ -576,18 +584,16 @@ var PickerWheelColumn = function (_Component) {
 
             this.spinTimeout = setTimeout(function () {
                 var closestAnimatedIndex = -Math.round(_this2.state.translateY / _this2.itemHeight);
-                console.log(closestAnimatedIndex);
                 if (closestAnimatedIndex !== _this2.currentIndex) {
-                    console.log('updating items');
                     _this2._updateItemsAndMargin(closestAnimatedIndex - _this2.currentIndex);
                 }
-                if (_this2.velocity <= 0 && direction >= 0 || _this2.velocity >= 0 && direction <= 0 || _this2.accelerationRate * direction >= 0) {
-                    // in case we are increasing accelerating
-                    console.log('velocity reached 0');
+                if (_this2.velocity <= 0 && direction >= 0 || _this2.velocity >= 0 && direction <= 0 || _this2.accelerationRate * direction >= 0 || // in case we are increasing accelerating
+                !_this2.animating) {
+                    // make sure we are still animating
+                    _this2._updateItemsAndMargin(closestAnimatedIndex - _this2.currentIndex);
                     _this2.props.onSelect(_this2.state.items[_this2.middleIndex].value);
                     _this2._clearTransition(_this2.refs.scroll);
                 } else {
-                    console.log('velocity NOT 0, moving again');
                     _this2._moveTo(obj, virtualCurrentIndex, direction);
                 }
             }, FIXED_SPIN_ANIMATION_TIME);
@@ -616,7 +622,7 @@ var PickerWheelColumn = function (_Component) {
             var timeDiff = now - this.lastEventTime;
             this.velocity = diff / timeDiff;
 
-            this.accelerationRate = -(this.velocity / MAX_SPIN_TIME); // units per ms for decelleration
+            this.estimatedAccelerationRate = -(this.velocity / MAX_SPIN_TIME); // units per ms for decelleration until velocity=0
 
             this.lastEventTime = Date.now();
             this.lastTouchY = touchY;
