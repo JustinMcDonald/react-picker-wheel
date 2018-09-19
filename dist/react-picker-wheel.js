@@ -680,7 +680,7 @@ var PickerWheelColumn = function (_Component) {
             this.touchY = !isUndefined(event.targetTouches) && !isUndefined(event.targetTouches[0]) ? event.targetTouches[0].pageY : event.pageY;
 
             this._clearTransition(this.refs.scroll);
-
+            this.velocity = 0;
             this.translateY = this.state.translateY;
             this.moveItemCount = 0;
         }
