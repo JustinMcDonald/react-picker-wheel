@@ -556,7 +556,15 @@ var PickerWheelColumn = function (_Component) {
                 var numberOfAccelerationEvents = MAX_SPIN_TIME / FIXED_SPIN_ANIMATION_TIME;
 
                 // estimate distance based on current acceleration, velocity, and number of velocity changing events
-                var estimatedDistTravelled = this.velocity * numberOfAccelerationEvents + 0.5 * this.estimatedAccelerationRate * Math.pow(numberOfAccelerationEvents, 2);
+                //const estimatedDistTravelled = this.velocity * numberOfAccelerationEvents +
+                //    (0.5 * this.estimatedAccelerationRate * Math.pow(numberOfAccelerationEvents, 2));
+
+                var estimatedDistTravelled = 0;
+                var simulatedVelocity = this.velocity;
+                for (var i = 0; i < numberOfAccelerationEvents; i++) {
+                    estimatedDistTravelled += simulatedVelocity;
+                    simulatedVelocity += this.estimatedAccelerationRate;
+                }
 
                 var estimatedTotalDistTravelled = -this.state.translateY + estimatedDistTravelled;
 
@@ -593,9 +601,6 @@ var PickerWheelColumn = function (_Component) {
             // turn on transform css
             addPrefixCss(obj, { transition: 'transform ' + FIXED_SPIN_ANIMATION_TIME + 'ms ease-out' });
 
-            // apply acceleration to velocity
-            this.velocity += this.accelerationRate;
-
             // always add flat remainder fragment
             var unitsToTravelNow = this.velocity + this.remainderFragment;
 
@@ -608,6 +613,9 @@ var PickerWheelColumn = function (_Component) {
 
             // sum total dist (logging)
             this.totalDistanceTravelled += unitsToTravelNow;
+
+            // apply acceleration to velocity
+            this.velocity += this.accelerationRate;
 
             console.log({
                 translateY: this.state.translateY,
