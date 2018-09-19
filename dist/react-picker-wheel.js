@@ -357,9 +357,9 @@ var isUndefined = function isUndefined(val) {
 };
 var FIXED_SPIN_ANIMATION_TIME = 100;
 var MAX_SPIN_TIME = 3000;
-var MAX_VELOCITY = 80;
+var MAX_VELOCITY = 100;
 
-var SNAPPY_VELOCITY_THRESHOLD = 20;
+var SNAPPY_VELOCITY_THRESHOLD = 40;
 var SNAPPY_ANIMATION_TIME = 300;
 
 /**
@@ -385,7 +385,6 @@ var PickerWheelColumn = function (_Component) {
         _this.spinTimeout = null;
         _this.accelerationRate = 0;
         _this.estimatedAccelerationRate = 0;
-        _this.totalDistanceTravelled = 0;
         _this.remainderDistTravelled = 0;
         _this.remainderFragment = 0;
 
@@ -586,7 +585,7 @@ var PickerWheelColumn = function (_Component) {
             }
 
             // turn on transform css
-            addPrefixCss(this.refs.scroll, { transition: 'transform ' + FIXED_SPIN_ANIMATION_TIME + 'ms ease-out' });
+            addPrefixCss(this.refs.scroll, { transition: 'transform ' + FIXED_SPIN_ANIMATION_TIME + 'ms linear' });
 
             // always add flat remainder fragment
             var unitsToTravelNow = this.velocity + this.remainderFragment;
@@ -595,9 +594,6 @@ var PickerWheelColumn = function (_Component) {
             this.setState(function (state, props) {
                 return { translateY: state.translateY - unitsToTravelNow };
             });
-
-            // sum total dist (logging)
-            this.totalDistanceTravelled += unitsToTravelNow;
 
             // apply acceleration to velocity
             this.velocity += this.accelerationRate;
@@ -687,9 +683,13 @@ var PickerWheelColumn = function (_Component) {
             this.touchY = !isUndefined(event.targetTouches) && !isUndefined(event.targetTouches[0]) ? event.targetTouches[0].pageY : event.pageY;
 
             this._clearTransition(this.refs.scroll);
-            this.velocity = 0;
             this.translateY = this.state.translateY;
             this.moveItemCount = 0;
+
+            // update/reset velocity
+            this.velocity = 0;
+            this.lastEventTime = Date.now();
+            this.lastTouchY = touchY;
         }
     }, {
         key: 'handleMove',
@@ -712,7 +712,6 @@ var PickerWheelColumn = function (_Component) {
 
             this.lastEventTime = Date.now();
             this.lastTouchY = touchY;
-            this.totalDistanceTravelled = 0;
 
             // 日期最小值，最大值限制
             var value = this.state.items[this.middleIndex].value;
