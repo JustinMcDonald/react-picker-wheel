@@ -580,14 +580,14 @@ var PickerWheelColumn = function (_Component) {
 
             addPrefixCss(obj, { transition: 'transform ' + FIXED_SPIN_ANIMATION_TIME + 'ms ease-out' });
 
+            // todo simplify accel prediction and make this more accurate
+            this.velocity += this.accelerationRate;
+
             this.setState(function (state, props) {
                 return { translateY: state.translateY - _this2.velocity };
             });
 
             this.totalDistanceTravelled += this.velocity;
-
-            // todo simplify accel prediction and make this more accurate
-            this.velocity += this.accelerationRate;
 
             console.log({
                 translateY: this.state.translateY,
@@ -605,10 +605,17 @@ var PickerWheelColumn = function (_Component) {
                 if (closestAnimatedIndex !== _this2.currentIndex) {
                     _this2._updateItemsAndMargin(closestAnimatedIndex - _this2.currentIndex);
                 }
-                if (_this2.velocity <= 0 && direction >= 0 || _this2.velocity >= 0 && direction <= 0 || _this2.accelerationRate * direction >= 0 || // in case we are increasing accelerating
+                if (direction >= 0 && _this2.velocity + _this2.accelerationRate <= 0 || direction <= 0 && _this2.velocity + _this2.accelerationRate >= 0) {
+                    var animationTimeLeft = FIXED_SPIN_ANIMATION_TIME * Math.abs(_this2.velocity / _this2.accelerationRate);
+                    addPrefixCss(obj, { transition: 'transform ' + animationTimeLeft + 'ms ease-out' });
+                    _this2.setState({ translateY: -_this2.currentIndex * _this2.itemHeight });
+                    _this2.spinTimeout = setTimeout(function () {
+                        _this2.props.onSelect(_this2.state.items[_this2.middleIndex].value);
+                        _this2._clearTransition(_this2.refs.scroll);
+                    }, animationTimeLeft);
+                } else if (_this2.velocity <= 0 && direction >= 0 || _this2.velocity >= 0 && direction <= 0 || _this2.accelerationRate * direction >= 0 || // in case we are increasing accelerating
                 !_this2.animating) {
                     // make sure we are still animating
-                    //this.setState({ translateY: - this.currentIndex * this.itemHeight });
                     _this2.props.onSelect(_this2.state.items[_this2.middleIndex].value);
                     _this2._clearTransition(_this2.refs.scroll);
                 } else {
