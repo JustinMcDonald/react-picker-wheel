@@ -383,6 +383,8 @@ var PickerWheelColumn = function (_Component) {
         _this.accelerationRate = 0;
         _this.estimatedAccelerationRate = 0;
         _this.totalDistanceTravelled = 0;
+        _this.remainderDistTravelled = 0;
+        _this.remainderFragment = 0;
 
         _this.middleIndex = Math.floor(props.items.length / 2);
         _this.middleY = -_this.itemHeight * _this.middleIndex;
@@ -561,18 +563,20 @@ var PickerWheelColumn = function (_Component) {
             if (this.estimatedAccelerationRate !== this.accelerationRate) {
                 var numberOfAccelerationEvents = MAX_SPIN_TIME / FIXED_SPIN_ANIMATION_TIME;
                 var estimatedDistTravelled = this.velocity * numberOfAccelerationEvents + 0.5 * this.estimatedAccelerationRate * Math.pow(numberOfAccelerationEvents, 2);
-                var targetDistTravelled = estimatedDistTravelled - estimatedDistTravelled % this.itemHeight;
-                var predictedAccelerationRate = (targetDistTravelled - this.velocity * numberOfAccelerationEvents) * 2 / Math.pow(numberOfAccelerationEvents, 2);
+                this.remainderDistTravelled = estimatedDistTravelled % this.itemHeight;
+                this.remainderFragment = this.remainderDistTravelled / numberOfAccelerationEvents;
+                var targetDistTravelled = estimatedDistTravelled - this.remainderDistTravelled;
+                //const predictedAccelerationRate = ((targetDistTravelled - (this.velocity * numberOfAccelerationEvents)) * 2) / Math.pow(numberOfAccelerationEvents, 2);
                 console.log({
                     velocity: this.velocity,
                     estimatedAccelerationRate: this.estimatedAccelerationRate,
                     numberOfAccelerationEvents: numberOfAccelerationEvents,
                     estimatedDistTravelled: estimatedDistTravelled,
                     targetDistTravelled: targetDistTravelled,
-                    predictedAccelerationRate: predictedAccelerationRate
+                    remainderDistTravelled: this.remainderDistTravelled,
+                    remainderFragment: this.remainderFragment
                 });
-                this.accelerationRate = predictedAccelerationRate;
-                this.estimatedAccelerationRate = predictedAccelerationRate;
+                this.accelerationRate = estimatedAccelerationRate;
             }
 
             var additionalIndexesToTravel = direction;
@@ -580,14 +584,19 @@ var PickerWheelColumn = function (_Component) {
 
             addPrefixCss(obj, { transition: 'transform ' + FIXED_SPIN_ANIMATION_TIME + 'ms ease-out' });
 
-            // todo simplify accel prediction and make this more accurate
-            this.velocity += this.accelerationRate;
-
             this.setState(function (state, props) {
                 return { translateY: state.translateY - _this2.velocity };
             });
 
             this.totalDistanceTravelled += this.velocity;
+
+            // todo simplify accel prediction and make this more accurate
+            if (this.remainderDistTravelled > 0) {
+                this.velocity += this.accelerationRate;
+            } else {
+                this.velocity += this.accelerationRate - remainderFragment;
+                this.remainderDistTravelled -= this.remainderFragment;
+            }
 
             console.log({
                 translateY: this.state.translateY,
@@ -605,17 +614,10 @@ var PickerWheelColumn = function (_Component) {
                 if (closestAnimatedIndex !== _this2.currentIndex) {
                     _this2._updateItemsAndMargin(closestAnimatedIndex - _this2.currentIndex);
                 }
-                if (direction >= 0 && _this2.velocity + _this2.accelerationRate <= 0 || direction <= 0 && _this2.velocity + _this2.accelerationRate >= 0) {
-                    var animationTimeLeft = FIXED_SPIN_ANIMATION_TIME * Math.abs(_this2.velocity / _this2.accelerationRate);
-                    addPrefixCss(obj, { transition: 'transform ' + animationTimeLeft + 'ms ease-out' });
-                    _this2.setState({ translateY: -_this2.currentIndex * _this2.itemHeight });
-                    _this2.spinTimeout = setTimeout(function () {
-                        _this2.props.onSelect(_this2.state.items[_this2.middleIndex].value);
-                        _this2._clearTransition(_this2.refs.scroll);
-                    }, animationTimeLeft);
-                } else if (_this2.velocity <= 0 && direction >= 0 || _this2.velocity >= 0 && direction <= 0 || _this2.accelerationRate * direction >= 0 || // in case we are increasing accelerating
+                if (_this2.velocity <= 0 && direction >= 0 || _this2.velocity >= 0 && direction <= 0 || _this2.accelerationRate * direction >= 0 || // in case we are increasing accelerating
                 !_this2.animating) {
                     // make sure we are still animating
+                    //this.setState({ translateY: - this.currentIndex * this.itemHeight });
                     _this2.props.onSelect(_this2.state.items[_this2.middleIndex].value);
                     _this2._clearTransition(_this2.refs.scroll);
                 } else {
