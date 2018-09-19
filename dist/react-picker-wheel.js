@@ -593,6 +593,9 @@ var PickerWheelColumn = function (_Component) {
             // turn on transform css
             addPrefixCss(obj, { transition: 'transform ' + FIXED_SPIN_ANIMATION_TIME + 'ms ease-out' });
 
+            // apply acceleration to velocity
+            this.velocity += this.accelerationRate;
+
             // always add flat remainder fragment
             var unitsToTravelNow = this.velocity + this.remainderFragment;
 
@@ -605,9 +608,6 @@ var PickerWheelColumn = function (_Component) {
 
             // sum total dist (logging)
             this.totalDistanceTravelled += unitsToTravelNow;
-
-            // apply acceleration to velocity
-            this.velocity += this.accelerationRate;
 
             console.log({
                 translateY: this.state.translateY,
