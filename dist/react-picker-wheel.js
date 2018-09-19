@@ -691,7 +691,7 @@ var PickerWheelColumn = function (_Component) {
             this.translateY = this.state.translateY;
             this.moveItemCount = 0;
 
-            syncSpinAndItems();
+            this.syncSpinAndItems();
 
             // update/reset velocity
             this.velocity = 0;
