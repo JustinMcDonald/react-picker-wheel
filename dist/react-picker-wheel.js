@@ -576,7 +576,7 @@ var PickerWheelColumn = function (_Component) {
                     remainderDistTravelled: this.remainderDistTravelled,
                     remainderFragment: this.remainderFragment
                 });
-                this.accelerationRate = estimatedAccelerationRate;
+                this.accelerationRate = this.estimatedAccelerationRate;
             }
 
             var additionalIndexesToTravel = direction;
@@ -606,7 +606,8 @@ var PickerWheelColumn = function (_Component) {
                 velocity: this.velocity,
                 accelerationRate: this.accelerationRate,
                 virtualCurrentIndex: virtualCurrentIndex,
-                currentIndex: this.currentIndex
+                currentIndex: this.currentIndex,
+                remainderDistTravelled: this.remainderDistTravelled
             });
 
             this.spinTimeout = setTimeout(function () {
