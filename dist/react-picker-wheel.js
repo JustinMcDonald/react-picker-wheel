@@ -661,7 +661,7 @@ var PickerWheelColumn = function (_Component) {
             var animationTime = function (indexes) {
                 switch (Math.abs(indexes)) {
                     case 0:
-                        return 30;
+                        return 50;
                     case 1:
                         return 100;
                     default:
