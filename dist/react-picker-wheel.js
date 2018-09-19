@@ -563,9 +563,9 @@ var PickerWheelColumn = function (_Component) {
             if (this.estimatedAccelerationRate !== this.accelerationRate) {
                 var numberOfAccelerationEvents = MAX_SPIN_TIME / FIXED_SPIN_ANIMATION_TIME;
                 var estimatedDistTravelled = this.velocity * numberOfAccelerationEvents + 0.5 * this.estimatedAccelerationRate * Math.pow(numberOfAccelerationEvents, 2);
-                this.remainderDistTravelled = estimatedDistTravelled % this.itemHeight;
+                var targetDistTravelled = estimatedDistTravelled - estimatedDistTravelled % this.itemHeight + this.itemHeight;
+                this.remainderDistTravelled = targetDistTravelled - estimatedDistTravelled;
                 this.remainderFragment = this.remainderDistTravelled / numberOfAccelerationEvents;
-                var targetDistTravelled = estimatedDistTravelled - this.remainderDistTravelled;
                 //const predictedAccelerationRate = ((targetDistTravelled - (this.velocity * numberOfAccelerationEvents)) * 2) / Math.pow(numberOfAccelerationEvents, 2);
                 console.log({
                     velocity: this.velocity,
@@ -584,19 +584,20 @@ var PickerWheelColumn = function (_Component) {
 
             addPrefixCss(obj, { transition: 'transform ' + FIXED_SPIN_ANIMATION_TIME + 'ms ease-out' });
 
-            this.setState(function (state, props) {
-                return { translateY: state.translateY - _this2.velocity };
-            });
-
-            this.totalDistanceTravelled += this.velocity;
-
+            var unitsToTravelNow = this.velocity;
             // todo simplify accel prediction and make this more accurate
-            if (this.remainderDistTravelled <= 0 && direction >= 0 || this.remainderDistTravelled >= 0 && direction <= 0) {
-                this.velocity += this.accelerationRate;
-            } else {
-                this.velocity += this.accelerationRate - this.remainderFragment;
+            if (this.remainderDistTravelled > 0 && direction >= 0 || this.remainderDistTravelled < 0 && direction <= 0) {
+                unitsToTravelNow += this.remainderFragment;
                 this.remainderDistTravelled -= this.remainderFragment;
             }
+
+            this.setState(function (state, props) {
+                return { translateY: state.translateY - unitsToTravelNow };
+            });
+
+            this.totalDistanceTravelled += unitsToTravelNow;
+
+            this.velocity += this.accelerationRate;
 
             console.log({
                 translateY: this.state.translateY,
