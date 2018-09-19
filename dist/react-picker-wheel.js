@@ -578,15 +578,14 @@ var PickerWheelColumn = function (_Component) {
             var additionalIndexesToTravel = direction;
             var virtualCurrentIndex = additionalIndexesToTravel + currentIndex;
 
-            // todo simplify accel prediction and make this more accurate
-            this.velocity += this.accelerationRate;
-
             addPrefixCss(obj, { transition: 'transform ' + FIXED_SPIN_ANIMATION_TIME + 'ms ease-out' });
 
             this.setState(function (state, props) {
                 return { translateY: state.translateY - _this2.velocity };
             });
 
+            // todo simplify accel prediction and make this more accurate
+            this.velocity += this.accelerationRate;
             this.totalDistanceTravelled += this.velocity;
 
             console.log({
