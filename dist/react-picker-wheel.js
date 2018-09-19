@@ -578,7 +578,6 @@ var PickerWheelColumn = function (_Component) {
                 // deprecated
                 //const predictedAccelerationRate = ((targetDistTravelled - (this.velocity * numberOfAccelerationEvents)) * 2) / Math.pow(numberOfAccelerationEvents, 2);
 
-                console.log('INIT');
                 console.log({
                     translateY: this.state.translateY,
                     velocity: this.velocity,
@@ -634,13 +633,12 @@ var PickerWheelColumn = function (_Component) {
                 if (closestAnimatedIndex !== _this2.currentIndex) {
                     _this2._updateItemsAndMargin(closestAnimatedIndex - _this2.currentIndex);
                 }
-                if (_this2.velocity <= 0 && direction >= 0 || _this2.velocity >= 0 && direction <= 0 || _this2.accelerationRate * direction >= 0 || // in case we are increasing accelerating
-                !_this2.animating) {
-                    // make sure we are still animating
-                    //this.setState({ translateY: - this.currentIndex * this.itemHeight });
+                if (_this2.velocity <= 0 && direction >= 0 || _this2.velocity >= 0 && direction <= 0 || _this2.accelerationRate * direction >= 0) {
+                    // in case we are increasing accelerating
+                    _this2.setState({ translateY: -_this2.currentIndex * _this2.itemHeight });
                     _this2.props.onSelect(_this2.state.items[_this2.middleIndex].value);
                     _this2._clearTransition(_this2.refs.scroll);
-                } else {
+                } else if (_this2.animating) {
                     _this2._moveTo(obj, virtualCurrentIndex, direction);
                 }
             }, FIXED_SPIN_ANIMATION_TIME);
@@ -715,7 +713,7 @@ var PickerWheelColumn = function (_Component) {
         key: 'handleContentTouch',
         value: function handleContentTouch(event) {
             event.preventDefault();
-            if (this.animating) return;
+            //if (this.animating) return;
             if (event.type === 'touchstart') {
                 this.handleStart(event);
             } else if (event.type === 'touchmove') {
@@ -734,7 +732,7 @@ var PickerWheelColumn = function (_Component) {
     }, {
         key: 'handleContentMouseDown',
         value: function handleContentMouseDown(event) {
-            if (this.animating) return;
+            //if (this.animating) return;
             this.handleStart(event);
             document.addEventListener('mousemove', this.handleContentMouseMove);
             document.addEventListener('mouseup', this.handleContentMouseUp);
@@ -742,13 +740,13 @@ var PickerWheelColumn = function (_Component) {
     }, {
         key: 'handleContentMouseMove',
         value: function handleContentMouseMove(event) {
-            if (this.animating) return;
+            //if (this.animating) return;
             this.handleMove(event);
         }
     }, {
         key: 'handleContentMouseUp',
         value: function handleContentMouseUp(event) {
-            if (this.animating) return;
+            //if (this.animating) return;
             this.handleEnd(event);
             document.removeEventListener('mousemove', this.handleContentMouseMove);
             document.removeEventListener('mouseup', this.handleContentMouseUp);
