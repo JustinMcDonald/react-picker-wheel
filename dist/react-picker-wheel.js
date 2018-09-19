@@ -355,7 +355,12 @@ var toConsumableArray = function (arr) {
 var isUndefined = function isUndefined(val) {
     return typeof val === 'undefined';
 };
-var FIXED_SPIN_ANIMATION_TIME = 200;
+var FIXED_SPIN_ANIMATION_TIME = 80;
+var MAX_SPIN_TIME = 3000;
+var MAX_VELOCITY = 80;
+
+var SNAPPY_VELOCITY_THRESHOLD = 40;
+var SNAPPY_ANIMATION_TIME = 300;
 
 /**
  * Class Date组件类
@@ -377,6 +382,11 @@ var PickerWheelColumn = function (_Component) {
         _this.velocity = 0;
         _this.moveItemCount = 0; // 一次滑动移动了多少个时间
         _this.itemHeight = props.itemHeight;
+        _this.spinTimeout = null;
+        _this.accelerationRate = 0;
+        _this.estimatedAccelerationRate = 0;
+        _this.remainderDistTravelled = 0;
+        _this.remainderFragment = 0;
 
         _this.middleIndex = Math.floor(props.items.length / 2);
         _this.middleY = -_this.itemHeight * _this.middleIndex;
@@ -499,7 +509,9 @@ var PickerWheelColumn = function (_Component) {
     }, {
         key: '_clearTransition',
         value: function _clearTransition(obj) {
+            this.animating = false;
             addPrefixCss(obj, { transition: '' });
+            clearTimeout(this.spinTimeout);
         }
 
         /**
@@ -522,7 +534,7 @@ var PickerWheelColumn = function (_Component) {
                 this._updateItemsAndMargin(-1);
             }
 
-            this._moveTo(this.refs.scroll, this.currentIndex, direction);
+            if (Math.abs(this.velocity) < SNAPPY_VELOCITY_THRESHOLD) this._snappySpinTo(direction);else this._scrollWithVelocity(direction);
         }
 
         /**
@@ -533,16 +545,99 @@ var PickerWheelColumn = function (_Component) {
          */
 
     }, {
-        key: '_moveTo',
-        value: function _moveTo(obj, currentIndex, direction) {
+        key: '_scrollWithVelocity',
+        value: function _scrollWithVelocity(direction) {
             var _this2 = this;
 
             this.animating = true;
 
-            var accelerationRate = -(this.velocity / FIXED_SPIN_ANIMATION_TIME); // units per ms for decelleration
+            // STUB to calculate target distance and extra remainder distance to reach it
+            if (this.estimatedAccelerationRate !== this.accelerationRate) {
+
+                // always fixed number of animation events
+                var numberOfAccelerationEvents = MAX_SPIN_TIME / FIXED_SPIN_ANIMATION_TIME;
+
+                // estimate distance based on current acceleration, velocity, and number of velocity changing events
+                //const estimatedDistTravelled = this.velocity * numberOfAccelerationEvents +
+                //    (0.5 * this.estimatedAccelerationRate * Math.pow(numberOfAccelerationEvents, 2));
+
+                var estimatedDistTravelled = 0;
+                var simulatedVelocity = this.velocity;
+                for (var i = 0; i < numberOfAccelerationEvents; i++) {
+                    estimatedDistTravelled += simulatedVelocity;
+                    simulatedVelocity += this.estimatedAccelerationRate;
+                }
+
+                var estimatedTotalDistTravelled = -this.state.translateY + estimatedDistTravelled;
+
+                // target is next mod item height
+                var targetDistTravelled = estimatedTotalDistTravelled - estimatedTotalDistTravelled % this.itemHeight + this.itemHeight + this.state.translateY;
+
+                // calculate remainder and flat velocity addition on each animation event
+                this.remainderDistTravelled = targetDistTravelled - estimatedDistTravelled;
+                this.remainderFragment = this.remainderDistTravelled / numberOfAccelerationEvents;
+
+                // deprecated
+                //const predictedAccelerationRate = ((targetDistTravelled - (this.velocity * numberOfAccelerationEvents)) * 2) / Math.pow(numberOfAccelerationEvents, 2);
+
+                // STUB to not recompute all above
+                this.accelerationRate = this.estimatedAccelerationRate;
+            }
+
+            // turn on transform css
+            addPrefixCss(this.refs.scroll, { transition: 'transform ' + FIXED_SPIN_ANIMATION_TIME + 'ms linear' });
+
+            // always add flat remainder fragment
+            var unitsToTravelNow = this.velocity + this.remainderFragment;
+
+            // set next translateY target
+            this.setState(function (state, props) {
+                return { translateY: state.translateY - unitsToTravelNow };
+            });
+
+            // apply acceleration to velocity
+            this.velocity += this.accelerationRate;
+
+            this.spinTimeout = setTimeout(function () {
+                _this2.syncSpinAndItems();
+                if (_this2.velocity <= 0 && direction >= 0 || _this2.velocity >= 0 && direction <= 0 || _this2.accelerationRate * direction >= 0) {
+                    // in case we are increasing accelerating
+                    _this2.setState({ translateY: -_this2.currentIndex * _this2.itemHeight });
+                    _this2.props.onSelect(_this2.state.items[_this2.middleIndex].value);
+                    _this2._clearTransition(_this2.refs.scroll);
+                } else if (_this2.animating) {
+                    _this2._scrollWithVelocity(direction);
+                }
+            }, FIXED_SPIN_ANIMATION_TIME);
+        }
+    }, {
+        key: 'syncSpinAndItems',
+        value: function syncSpinAndItems() {
+            var closestAnimatedIndex = -Math.round(this.state.translateY / this.itemHeight);
+            if (closestAnimatedIndex !== this.currentIndex) {
+                this._updateItemsAndMargin(closestAnimatedIndex - this.currentIndex);
+            }
+        }
+
+        /**
+         * 添加滑动动画
+         * @param  {DOM} obj   DOM对象
+         * @param  {number} angle 角度
+         * @return {undefined}
+         */
+
+    }, {
+        key: '_snappySpinTo',
+        value: function _snappySpinTo(direction) {
+            var _this3 = this;
+
+            this.animating = true;
+
+            this.velocity = this.velocity / FIXED_SPIN_ANIMATION_TIME;
+            var accelerationRate = -(this.velocity / SNAPPY_ANIMATION_TIME); // units per ms for decelleration
 
             var unitsToTravel = 0;
-            for (var i = 0; i < FIXED_SPIN_ANIMATION_TIME; i++) {
+            for (var i = 0; i < SNAPPY_ANIMATION_TIME; i++) {
                 unitsToTravel += this.velocity;
                 this.velocity += accelerationRate;
             }
@@ -553,21 +648,21 @@ var PickerWheelColumn = function (_Component) {
                 return a - b;
             })[1];
 
-            var virtualCurrentIndex = additionalIndexesToTravel + currentIndex;
+            var virtualCurrentIndex = additionalIndexesToTravel + this.currentIndex;
 
             // heuristic to speed up animations for small velocities
             var animationTime = function (indexes) {
                 switch (Math.abs(indexes)) {
                     case 0:
-                        return 30;
+                        return 50;
                     case 1:
                         return 100;
                     default:
-                        return FIXED_SPIN_ANIMATION_TIME;
+                        return SNAPPY_ANIMATION_TIME;
                 }
             }(additionalIndexesToTravel);
 
-            addPrefixCss(obj, { transition: 'transform ' + animationTime + 'ms ease-out' });
+            addPrefixCss(this.refs.scroll, { transition: 'transform ' + animationTime + 'ms ease-out' });
 
             this.setState({
                 translateY: -virtualCurrentIndex * this.itemHeight
@@ -575,10 +670,9 @@ var PickerWheelColumn = function (_Component) {
 
             // NOTE: There is no transitionend, setTimeout is used instead.
             setTimeout(function () {
-                _this2._updateItemsAndMargin(additionalIndexesToTravel);
-                _this2.animating = false;
-                _this2.props.onSelect(_this2.state.items[_this2.middleIndex].value);
-                _this2._clearTransition(_this2.refs.scroll);
+                _this3._updateItemsAndMargin(additionalIndexesToTravel);
+                _this3.props.onSelect(_this3.state.items[_this3.middleIndex].value);
+                _this3._clearTransition(_this3.refs.scroll);
             }, animationTime);
         }
     }, {
@@ -586,8 +680,16 @@ var PickerWheelColumn = function (_Component) {
         value: function handleStart(event) {
             this.touchY = !isUndefined(event.targetTouches) && !isUndefined(event.targetTouches[0]) ? event.targetTouches[0].pageY : event.pageY;
 
+            this._clearTransition(this.refs.scroll);
             this.translateY = this.state.translateY;
             this.moveItemCount = 0;
+
+            this.syncSpinAndItems();
+
+            // update/reset velocity
+            this.velocity = 0;
+            this.lastEventTime = Date.now();
+            this.lastTouchY = this.touchY;
         }
     }, {
         key: 'handleMove',
@@ -601,7 +703,12 @@ var PickerWheelColumn = function (_Component) {
             var diff = this.lastTouchY - touchY;
             var now = Date.now();
             var timeDiff = now - this.lastEventTime;
-            this.velocity = diff / timeDiff;
+
+            this.velocity = [-MAX_VELOCITY, Math.round(diff / timeDiff * FIXED_SPIN_ANIMATION_TIME), MAX_VELOCITY].sort(function (a, b) {
+                return a - b;
+            })[1];
+
+            this.estimatedAccelerationRate = -(this.velocity / (MAX_SPIN_TIME / FIXED_SPIN_ANIMATION_TIME)); // units per ms for decelleration until velocity=0
 
             this.lastEventTime = Date.now();
             this.lastTouchY = touchY;
@@ -643,7 +750,7 @@ var PickerWheelColumn = function (_Component) {
         key: 'handleContentTouch',
         value: function handleContentTouch(event) {
             event.preventDefault();
-            if (this.animating) return;
+            //if (this.animating) return;
             if (event.type === 'touchstart') {
                 this.handleStart(event);
             } else if (event.type === 'touchmove') {
@@ -662,7 +769,7 @@ var PickerWheelColumn = function (_Component) {
     }, {
         key: 'handleContentMouseDown',
         value: function handleContentMouseDown(event) {
-            if (this.animating) return;
+            //if (this.animating) return;
             this.handleStart(event);
             document.addEventListener('mousemove', this.handleContentMouseMove);
             document.addEventListener('mouseup', this.handleContentMouseUp);
@@ -670,13 +777,13 @@ var PickerWheelColumn = function (_Component) {
     }, {
         key: 'handleContentMouseMove',
         value: function handleContentMouseMove(event) {
-            if (this.animating) return;
+            //if (this.animating) return;
             this.handleMove(event);
         }
     }, {
         key: 'handleContentMouseUp',
         value: function handleContentMouseUp(event) {
-            if (this.animating) return;
+            //if (this.animating) return;
             this.handleEnd(event);
             document.removeEventListener('mousemove', this.handleContentMouseMove);
             document.removeEventListener('mouseup', this.handleContentMouseUp);
@@ -709,7 +816,7 @@ var PickerWheelColumn = function (_Component) {
     }, {
         key: 'render',
         value: function render() {
-            var _this3 = this;
+            var _this4 = this;
 
             var scrollStyle = formatCss({
                 transform: 'translateY(' + this.state.translateY + 'px)',
@@ -723,7 +830,7 @@ var PickerWheelColumn = function (_Component) {
                     'div',
                     {
                         ref: function ref(viewport) {
-                            return _this3.viewport = viewport;
+                            return _this4.viewport = viewport;
                         } // eslint-disable-line
                         , className: 'picker-wheel-viewport',
                         style: { height: this.itemHeight * 5 }
