@@ -549,24 +549,26 @@ var PickerWheelColumn = function (_Component) {
 
             this.animating = true;
 
-            //const unitsToTravel = FIXED_SPIN_ANIMATION_TIME * this.velocity;
-
-            /*
-            const absoluteUnitsToTravel = Math.abs(unitsToTravel);
-             const additionalIndexesToTravel = [
-                -this.maxItemSpinCount,
-                Math.floor(absoluteUnitsToTravel / this.itemHeight) * direction,
-                this.maxItemSpinCount
-            ].sort(function(a, b){ return a - b; })[1];
-            */
-
+            // STUB to calculate target distance and extra remainder distance to reach it
             if (this.estimatedAccelerationRate !== this.accelerationRate) {
+
+                // always fixed number of animation events
                 var numberOfAccelerationEvents = MAX_SPIN_TIME / FIXED_SPIN_ANIMATION_TIME;
+
+                // estimate distance based on current acceleration, velocity, and number of velocity changing events
                 var estimatedDistTravelled = this.velocity * numberOfAccelerationEvents + 0.5 * this.estimatedAccelerationRate * Math.pow(numberOfAccelerationEvents, 2);
+
+                // target is next mod item height
                 var targetDistTravelled = estimatedDistTravelled - estimatedDistTravelled % this.itemHeight + this.itemHeight;
+
+                // calculate remainder and flat velocity addition on each animation event
                 this.remainderDistTravelled = targetDistTravelled - estimatedDistTravelled;
                 this.remainderFragment = this.remainderDistTravelled / numberOfAccelerationEvents;
+
+                // deprecated
                 //const predictedAccelerationRate = ((targetDistTravelled - (this.velocity * numberOfAccelerationEvents)) * 2) / Math.pow(numberOfAccelerationEvents, 2);
+
+                console.log('INIT');
                 console.log({
                     velocity: this.velocity,
                     estimatedAccelerationRate: this.estimatedAccelerationRate,
@@ -576,30 +578,33 @@ var PickerWheelColumn = function (_Component) {
                     remainderDistTravelled: this.remainderDistTravelled,
                     remainderFragment: this.remainderFragment
                 });
+
+                // STUB to not recompute all above
                 this.accelerationRate = this.estimatedAccelerationRate;
             }
 
+            // not used
             var additionalIndexesToTravel = direction;
             var virtualCurrentIndex = additionalIndexesToTravel + currentIndex;
 
+            // turn on transform css
             addPrefixCss(obj, { transition: 'transform ' + FIXED_SPIN_ANIMATION_TIME + 'ms ease-out' });
 
-            this.velocity += this.accelerationRate;
+            // always add flat remainder fragment
+            var unitsToTravelNow = this.velocity + this.remainderFragment;
 
-            var unitsToTravelNow = this.velocity;
-            // todo simplify accel prediction and make this more accurate
-            if (this.remainderDistTravelled > 0 && direction >= 0 || this.remainderDistTravelled < 0 && direction <= 0) {
-                unitsToTravelNow += this.remainderFragment;
-                this.remainderDistTravelled -= this.remainderFragment;
-            }
-
+            // set next translateY target
             this.setState(function (state, props) {
                 console.log(state.translateY);
                 console.log(unitsToTravelNow);
                 return { translateY: state.translateY - unitsToTravelNow };
             });
 
+            // sum total dist (logging)
             this.totalDistanceTravelled += unitsToTravelNow;
+
+            // apply acceleration to velocity
+            this.velocity += this.accelerationRate;
 
             console.log({
                 translateY: this.state.translateY,
@@ -610,7 +615,7 @@ var PickerWheelColumn = function (_Component) {
                 accelerationRate: this.accelerationRate,
                 virtualCurrentIndex: virtualCurrentIndex,
                 currentIndex: this.currentIndex,
-                remainderDistTravelled: this.remainderDistTravelled
+                remainderFragment: this.remainderFragment
             });
 
             this.spinTimeout = setTimeout(function () {
