@@ -633,9 +633,6 @@ var PickerWheelColumn = function (_Component) {
 
             this.animating = true;
 
-            console.log(this.velocity);
-            console.log(this.currentIndex);
-
             this.velocity = this.velocity / FIXED_SPIN_ANIMATION_TIME;
             var accelerationRate = -(this.velocity / SNAPPY_ANIMATION_TIME); // units per ms for decelleration
 
@@ -645,15 +642,11 @@ var PickerWheelColumn = function (_Component) {
                 this.velocity += accelerationRate;
             }
 
-            console.log(unitsToTravel);
-
             var absoluteUnitsToTravel = Math.abs(unitsToTravel);
 
             var additionalIndexesToTravel = [-this.maxItemSpinCount, Math.floor(absoluteUnitsToTravel / this.itemHeight) * direction, this.maxItemSpinCount].sort(function (a, b) {
                 return a - b;
             })[1];
-
-            console.log(additionalIndexesToTravel);
 
             var virtualCurrentIndex = additionalIndexesToTravel + this.currentIndex;
 
