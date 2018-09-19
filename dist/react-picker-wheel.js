@@ -558,8 +558,10 @@ var PickerWheelColumn = function (_Component) {
                 // estimate distance based on current acceleration, velocity, and number of velocity changing events
                 var estimatedDistTravelled = this.velocity * numberOfAccelerationEvents + 0.5 * this.estimatedAccelerationRate * Math.pow(numberOfAccelerationEvents, 2);
 
+                var estimatedEndTranslateY = this.state.translateY - estimatedDistTravelled;
+
                 // target is next mod item height
-                var targetDistTravelled = estimatedDistTravelled - estimatedDistTravelled % this.itemHeight + this.itemHeight;
+                var targetDistTravelled = estimatedEndTranslateY - estimatedEndTranslateY % this.itemHeight + this.itemHeight + this.state.translateY;
 
                 // calculate remainder and flat velocity addition on each animation event
                 this.remainderDistTravelled = targetDistTravelled - estimatedDistTravelled;
