@@ -584,6 +584,8 @@ var PickerWheelColumn = function (_Component) {
 
             addPrefixCss(obj, { transition: 'transform ' + FIXED_SPIN_ANIMATION_TIME + 'ms ease-out' });
 
+            this.velocity += this.accelerationRate;
+
             var unitsToTravelNow = this.velocity;
             // todo simplify accel prediction and make this more accurate
             if (this.remainderDistTravelled > 0 && direction >= 0 || this.remainderDistTravelled < 0 && direction <= 0) {
@@ -596,8 +598,6 @@ var PickerWheelColumn = function (_Component) {
             });
 
             this.totalDistanceTravelled += unitsToTravelNow;
-
-            this.velocity += this.accelerationRate;
 
             console.log({
                 translateY: this.state.translateY,
