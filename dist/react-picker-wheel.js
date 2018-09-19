@@ -355,9 +355,9 @@ var toConsumableArray = function (arr) {
 var isUndefined = function isUndefined(val) {
     return typeof val === 'undefined';
 };
-var FIXED_SPIN_ANIMATION_TIME = 100;
+var FIXED_SPIN_ANIMATION_TIME = 50;
 var MAX_SPIN_TIME = 3000;
-var MAX_VELOCITY = 100;
+var MAX_VELOCITY = 80;
 
 var SNAPPY_VELOCITY_THRESHOLD = 40;
 var SNAPPY_ANIMATION_TIME = 300;
