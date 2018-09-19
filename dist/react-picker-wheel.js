@@ -689,7 +689,7 @@ var PickerWheelColumn = function (_Component) {
             // update/reset velocity
             this.velocity = 0;
             this.lastEventTime = Date.now();
-            this.lastTouchY = touchY;
+            this.lastTouchY = this.touchY;
         }
     }, {
         key: 'handleMove',
