@@ -355,7 +355,7 @@ var toConsumableArray = function (arr) {
 var isUndefined = function isUndefined(val) {
     return typeof val === 'undefined';
 };
-var FIXED_SPIN_ANIMATION_TIME = 50;
+var FIXED_SPIN_ANIMATION_TIME = 80;
 var MAX_SPIN_TIME = 3000;
 var MAX_VELOCITY = 80;
 
@@ -599,10 +599,7 @@ var PickerWheelColumn = function (_Component) {
             this.velocity += this.accelerationRate;
 
             this.spinTimeout = setTimeout(function () {
-                var closestAnimatedIndex = -Math.round(_this2.state.translateY / _this2.itemHeight);
-                if (closestAnimatedIndex !== _this2.currentIndex) {
-                    _this2._updateItemsAndMargin(closestAnimatedIndex - _this2.currentIndex);
-                }
+                _this2.syncSpinAndItems();
                 if (_this2.velocity <= 0 && direction >= 0 || _this2.velocity >= 0 && direction <= 0 || _this2.accelerationRate * direction >= 0) {
                     // in case we are increasing accelerating
                     _this2.setState({ translateY: -_this2.currentIndex * _this2.itemHeight });
@@ -612,6 +609,14 @@ var PickerWheelColumn = function (_Component) {
                     _this2._scrollWithVelocity(direction);
                 }
             }, FIXED_SPIN_ANIMATION_TIME);
+        }
+    }, {
+        key: 'syncSpinAndItems',
+        value: function syncSpinAndItems() {
+            var closestAnimatedIndex = -Math.round(this.state.translateY / this.itemHeight);
+            if (closestAnimatedIndex !== this.currentIndex) {
+                this._updateItemsAndMargin(closestAnimatedIndex - this.currentIndex);
+            }
         }
 
         /**
@@ -685,6 +690,8 @@ var PickerWheelColumn = function (_Component) {
             this._clearTransition(this.refs.scroll);
             this.translateY = this.state.translateY;
             this.moveItemCount = 0;
+
+            syncSpinAndItems();
 
             // update/reset velocity
             this.velocity = 0;
