@@ -360,6 +360,7 @@ var MAX_SPIN_TIME = 3000;
 var MAX_VELOCITY = 80;
 
 var SNAPPY_VELOCITY_THRESHOLD = 20;
+var SNAPPY_ANIMATION_TIME = 300;
 
 /**
  * Class Date组件类
@@ -631,10 +632,11 @@ var PickerWheelColumn = function (_Component) {
 
             this.animating = true;
 
-            var accelerationRate = -(this.velocity / FIXED_SPIN_ANIMATION_TIME); // units per ms for decelleration
+            this.velocity = this.velocity / FIXED_SPIN_ANIMATION_TIME;
+            var accelerationRate = -(this.velocity / SNAPPY_ANIMATION_TIME); // units per ms for decelleration
 
             var unitsToTravel = 0;
-            for (var i = 0; i < FIXED_SPIN_ANIMATION_TIME; i++) {
+            for (var i = 0; i < SNAPPY_ANIMATION_TIME; i++) {
                 unitsToTravel += this.velocity;
                 this.velocity += accelerationRate;
             }
@@ -655,7 +657,7 @@ var PickerWheelColumn = function (_Component) {
                     case 1:
                         return 100;
                     default:
-                        return FIXED_SPIN_ANIMATION_TIME;
+                        return SNAPPY_ANIMATION_TIME;
                 }
             }(additionalIndexesToTravel);
 
@@ -668,7 +670,6 @@ var PickerWheelColumn = function (_Component) {
             // NOTE: There is no transitionend, setTimeout is used instead.
             setTimeout(function () {
                 _this3._updateItemsAndMargin(additionalIndexesToTravel);
-                _this3.animating = false;
                 _this3.props.onSelect(_this3.state.items[_this3.middleIndex].value);
                 _this3._clearTransition(_this3.refs.scroll);
             }, animationTime);
