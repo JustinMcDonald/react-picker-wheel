@@ -357,7 +357,7 @@ var isUndefined = function isUndefined(val) {
 };
 var FIXED_SPIN_ANIMATION_TIME = 100;
 var MAX_SPIN_TIME = 3000;
-var MAX_VELOCITY = 40;
+var MAX_VELOCITY = 80;
 
 /**
  * Class Date组件类
@@ -584,9 +584,10 @@ var PickerWheelColumn = function (_Component) {
                 return { translateY: state.translateY - _this2.velocity };
             });
 
+            this.totalDistanceTravelled += this.velocity;
+
             // todo simplify accel prediction and make this more accurate
             this.velocity += this.accelerationRate;
-            this.totalDistanceTravelled += this.velocity;
 
             console.log({
                 translateY: this.state.translateY,
@@ -607,7 +608,7 @@ var PickerWheelColumn = function (_Component) {
                 if (_this2.velocity <= 0 && direction >= 0 || _this2.velocity >= 0 && direction <= 0 || _this2.accelerationRate * direction >= 0 || // in case we are increasing accelerating
                 !_this2.animating) {
                     // make sure we are still animating
-                    _this2.setState({ translateY: -_this2.currentIndex * _this2.itemHeight });
+                    //this.setState({ translateY: - this.currentIndex * this.itemHeight });
                     _this2.props.onSelect(_this2.state.items[_this2.middleIndex].value);
                     _this2._clearTransition(_this2.refs.scroll);
                 } else {
@@ -638,7 +639,9 @@ var PickerWheelColumn = function (_Component) {
             var now = Date.now();
             var timeDiff = now - this.lastEventTime;
 
-            this.velocity = Math.min(Math.round(diff / timeDiff * FIXED_SPIN_ANIMATION_TIME), MAX_VELOCITY);
+            this.velocity = [-MAX_VELOCITY, Math.round(diff / timeDiff * FIXED_SPIN_ANIMATION_TIME), MAX_VELOCITY].sort(function (a, b) {
+                return a - b;
+            })[1];
 
             this.estimatedAccelerationRate = -(this.velocity / (MAX_SPIN_TIME / FIXED_SPIN_ANIMATION_TIME)); // units per ms for decelleration until velocity=0
 
