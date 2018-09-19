@@ -591,7 +591,7 @@ var PickerWheelColumn = function (_Component) {
             this.totalDistanceTravelled += this.velocity;
 
             // todo simplify accel prediction and make this more accurate
-            if (this.remainderDistTravelled > 0 && direction >= 0 || this.remainderDistTravelled < 0 && direction <= 0) {
+            if (this.remainderDistTravelled <= 0 && direction >= 0 || this.remainderDistTravelled >= 0 && direction <= 0) {
                 this.velocity += this.accelerationRate;
             } else {
                 this.velocity += this.accelerationRate - this.remainderFragment;
