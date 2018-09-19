@@ -594,6 +594,8 @@ var PickerWheelColumn = function (_Component) {
             }
 
             this.setState(function (state, props) {
+                console.log(state.translateY);
+                console.log(unitsToTravelNow);
                 return { translateY: state.translateY - unitsToTravelNow };
             });
 
