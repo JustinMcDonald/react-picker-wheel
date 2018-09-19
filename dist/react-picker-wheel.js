@@ -357,6 +357,7 @@ var isUndefined = function isUndefined(val) {
 };
 var FIXED_SPIN_ANIMATION_TIME = 100;
 var MAX_SPIN_TIME = 3000;
+var MAX_VELOCITY = 40;
 
 /**
  * Class Date组件类
@@ -381,6 +382,7 @@ var PickerWheelColumn = function (_Component) {
         _this.spinTimeout = null;
         _this.accelerationRate = 0;
         _this.estimatedAccelerationRate = 0;
+        _this.totalDistanceTravelled = 0;
 
         _this.middleIndex = Math.floor(props.items.length / 2);
         _this.middleY = -_this.itemHeight * _this.middleIndex;
@@ -559,7 +561,7 @@ var PickerWheelColumn = function (_Component) {
             if (this.estimatedAccelerationRate !== this.accelerationRate) {
                 var numberOfAccelerationEvents = MAX_SPIN_TIME / FIXED_SPIN_ANIMATION_TIME;
                 var estimatedDistTravelled = this.velocity * numberOfAccelerationEvents + 0.5 * this.estimatedAccelerationRate * Math.pow(numberOfAccelerationEvents, 2);
-                var targetDistTravelled = estimatedDistTravelled - estimatedDistTravelled % this.itemHeight + this.itemHeight;
+                var targetDistTravelled = estimatedDistTravelled - estimatedDistTravelled % this.itemHeight;
                 var predictedAccelerationRate = (targetDistTravelled - this.velocity * numberOfAccelerationEvents) * 2 / Math.pow(numberOfAccelerationEvents, 2);
                 console.log({
                     velocity: this.velocity,
@@ -585,7 +587,12 @@ var PickerWheelColumn = function (_Component) {
                 return { translateY: state.translateY - _this2.velocity };
             });
 
+            this.totalDistanceTravelled += this.velocity;
+
             console.log({
+                translateY: this.state.translateY,
+                newTranslateY: this.state.translateY - this.velocity,
+                totalDistanceTravelled: this.totalDistanceTravelled,
                 direction: direction,
                 velocity: this.velocity,
                 accelerationRate: this.accelerationRate,
@@ -631,12 +638,14 @@ var PickerWheelColumn = function (_Component) {
             var diff = this.lastTouchY - touchY;
             var now = Date.now();
             var timeDiff = now - this.lastEventTime;
-            this.velocity = diff / timeDiff * FIXED_SPIN_ANIMATION_TIME;
+
+            this.velocity = Math.min(Math.round(diff / timeDiff * FIXED_SPIN_ANIMATION_TIME), MAX_VELOCITY);
 
             this.estimatedAccelerationRate = -(this.velocity / (MAX_SPIN_TIME / FIXED_SPIN_ANIMATION_TIME)); // units per ms for decelleration until velocity=0
 
             this.lastEventTime = Date.now();
             this.lastTouchY = touchY;
+            this.totalDistanceTravelled = 0;
 
             // 日期最小值，最大值限制
             var value = this.state.items[this.middleIndex].value;
