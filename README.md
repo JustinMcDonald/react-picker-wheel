@@ -88,7 +88,7 @@ const monthMap = {
 
 ### Install
 
-Repository currently includes `dist` files, add directly with yarn add `https://<repository>/JustinMcDonald/react-mobile-datepicker`.
+Repository currently includes `dist` files, add directly with yarn add `https://<repository>/react-picker-wheel`.
 
 ### Import what you need
 The following guide assumes you have some sort of ES2015 build set up using babel and/or webpack/browserify/gulp/grunt/etc.
